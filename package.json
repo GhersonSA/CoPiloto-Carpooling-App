@@ -1,0 +1,13 @@
+{
+  "name": "copiloto-carpooling",
+  "private": true,
+  "scripts": {
+    "start:client": "cd client && npm run dev",
+    "start:server": "cd server && npm run dev",
+    "start": "concurrently \"npm run start:client\" \"npm run start:server\"",
+    "build": "cd client && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
