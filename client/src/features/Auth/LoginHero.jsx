@@ -4,7 +4,7 @@ import { handleLogin, isAuthenticated } from '../../utils/auth';
 
 import logo from '../../assets/CoPiloto-logo-1.png'
 import city from '../../assets/city-2.jpg';
-import gLogo from '../../assets/g-black.png';
+import gLogo from '../../assets/G-black.png';
 
 const LoginHero = () => {
 
