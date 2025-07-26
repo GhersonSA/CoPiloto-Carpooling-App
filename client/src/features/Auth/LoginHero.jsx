@@ -81,7 +81,7 @@ const LoginHero = () => {
     }
 
     return (
-        <section className="h-screen overflow-hidden flex flex-col">
+        <section className="h-dvh overflow-hidden flex flex-col">
             <header className="flex items-center justify-between h-20 px-6 bg-white shadow-md md:px-8">
                 <div className="w-full max-w-[1600px] mx-auto flex items-center justify-between px-6 md:px-8">
                     <a href="https://ghersonsa.com/" target="_blank" arial-label="GhersonSA" className="text-2xl font-bold">
