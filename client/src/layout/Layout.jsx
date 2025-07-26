@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar';
 
 const Layout = () => {
     return (
-        <main className="flex h-screen overflow-hidden">
+        <main className="flex h-dvh overflow-hidden">
             <Sidebar />
             <section className="w-full h-full min-w-0 flex flex-col">
                 <Header />
