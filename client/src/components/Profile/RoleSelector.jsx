@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { BACKEND_URL } from '../../config';
 
 import imgChofer1 from '../../assets/imgChofer1.png';
 import imgChofer2 from '../../assets/imgChofer2.jpg';
@@ -13,8 +14,6 @@ import imgPasajero2 from '../../assets/imgPasajero2.jpg';
 import imgPasajero3 from '../../assets/imgPasajero3.png';
 
 const RoleSelector = ({ roles = [], fetchRoles }) => {
-  
-  const BACKEND_URL = "http://localhost:1234";
 
   const [rolSeleccionado, setRolSeleccionado] = useState("");
   const [formData, setFormData] = useState({});

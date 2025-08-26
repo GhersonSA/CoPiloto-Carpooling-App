@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
+import { BACKEND_URL } from '../config';
 import axios from "axios";
 
 export const useRoles = () => {
-    const BACKEND_URL = "http://localhost:1234"; 
     const [roles, setRoles] = useState([]);
     const [loading, setLoading] = useState(true);
 

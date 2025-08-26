@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { BACKEND_URL } from '../../config';
 import { useFetchData } from "../../hooks/useFetchData";
 
-const PassengerCard = ({ img, onClick, nombre, direccion, nacionalidad, trabajo, rutas = [] }) => {
 
-  const BACKEND_URL = "http://localhost:1234";
+const PassengerCard = ({ img, onClick, nombre, direccion, nacionalidad, trabajo, rutas = [] }) => {
 
   const users = useFetchData("users");
   const routePassengers = useFetchData("routePassengers");

@@ -1,9 +1,8 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
+import { BACKEND_URL } from '../../config';
 import { useFetchData } from "../../hooks/useFetchData";
 
 const Passenger = () => {
-
-    const BACKEND_URL = "http://localhost:1234"; 
 
     const passengers = useFetchData("passengers");
     const payments = useFetchData("payments");

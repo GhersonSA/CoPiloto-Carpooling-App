@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useRoles } from "../../hooks/useRoles";
+import { BACKEND_URL } from '../../config';
 import RoleSelector from "../../components/Profile/RoleSelector.jsx";
 
 import DriverSection from '../../components/HomeSections/DriverSection.jsx';
@@ -20,8 +21,6 @@ import imgPasajero3 from '../../assets/imgPasajero3.png';
 
 
 const Profile = () => {
-
-    const BACKEND_URL = "http://localhost:1234"; 
 
     const { roles, loading, setRoles, fetchRoles } = useRoles();
 

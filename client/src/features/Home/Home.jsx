@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { BACKEND_URL } from '../../config';
 import { useFetchData } from "../../hooks/useFetchData";
 
 import DriverSection from '../../components/HomeSections/DriverSection.jsx';
@@ -6,9 +7,6 @@ import PassengerSection from '../../components/HomeSections/PassengerSection.jsx
 import TripSection from '../../components/HomeSections/TripSection.jsx';
 
 const Home = () => {
-
-
-    const BACKEND_URL = "http://localhost:1234"; 
 
     const [vista, setVista] = useState("todo");
 

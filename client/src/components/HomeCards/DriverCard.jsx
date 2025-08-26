@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { BACKEND_URL } from '../../config';
 import { useFetchData } from "../../hooks/useFetchData";
 
 const DriverCard = ({ img, nombre, direccion, barrio, marca, modelo, color, matricula, plazas, imgVehiculo, origen, destino, dias, horaSalida, horaLlegada, horaRegreso, horaLlegadaRegreso, rutas = [], onClick }) => {
-
-    const BACKEND_URL = "http://localhost:1234"; 
 
     const routes = useFetchData("routes");
     const drivers = useFetchData("drivers");
