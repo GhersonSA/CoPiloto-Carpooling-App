@@ -1,15 +1,21 @@
 import { useState, useEffect, useRef } from 'react';
-import { useRoleData } from '../../hooks/useRoleData.js'
+import { useFetchData } from "../../hooks/useFetchData";
 
 import DriverSection from '../../components/HomeSections/DriverSection.jsx';
 import PassengerSection from '../../components/HomeSections/PassengerSection.jsx';
 import TripSection from '../../components/HomeSections/TripSection.jsx';
 
 const Home = () => {
-     
+
+
+    const BACKEND_URL = "http://localhost:1234"; 
+
     const [vista, setVista] = useState("todo");
 
-    const { drivers, passengers, routes } = useRoleData();
+    const drivers = useFetchData("drivers"); // CAMBIAR por USERS solo funciona para la card de ejemplo pero está OBSOLETO
+    const passengerProfiles = useFetchData("passengerProfiles");
+    const routes = useFetchData("routes");
+    const routePassengers = useFetchData("routePassengers");
 
     /* PASSENGER MODE */
 
@@ -32,6 +38,28 @@ const Home = () => {
     };
 
     /* */
+
+    const [user, setUser] = useState(null);
+
+    // Traer usuario logeado
+    useEffect(() => {
+        const fetchUser = async () => {
+        try {
+            const res = await fetch(`${BACKEND_URL}/me`, {
+            method: "GET",
+            credentials: "include",
+            });
+
+            if (!res.ok) throw new Error("Error al obtener usuario logeado");
+            const data = await res.json();
+            setUser(data);
+        } catch (err) {
+            console.error(err.message);
+        }
+        };
+
+        fetchUser();
+    }, []);
 
     /* SEARCH BAR */
 
@@ -58,7 +86,7 @@ const Home = () => {
     return (
         <section className="h-full">
             <div className="bg-blue-950 lg:bg-blue-950/90 flex justify-center items-center flex-col w-full h-70">
-                <h1 className="text-white text-4xl sm:text-5xl font-secondary font-bold mb-6">Encuentra tu recorrido ideal</h1>
+                <h1 className="text-white text-4xl sm:text-5xl font-secondary font-bold mb-6 ml-6 sm:ml-0">Encuentra tu recorrido ideal</h1>
                 <input type="text" id="searchInput" placeholder="Buscar chofer, pasajero, lugar, viaje..." ref={inputRef} className="bg-gray-50 h-20 w-120 sm:w-250 text-2xl rounded-2xl p-5 border border-blue-950" />
             </div>
             <div>
@@ -85,7 +113,7 @@ const Home = () => {
 
                         <section>
                             <h2 className="home-titles">🧍 Buscar Pasajeros</h2>
-                            <PassengerSection passengers={passengers} abrirModal={abrirModal} busqueda={busqueda} />
+                            <PassengerSection passengers={passengerProfiles}  routes={routePassengers} abrirModal={abrirModal} busqueda={busqueda} />
                         </section>
 
                         <section>
@@ -99,7 +127,7 @@ const Home = () => {
                 )}
 
                 {vista === "pasajeros" && (
-                    <PassengerSection passengers={passengers} abrirModal={abrirModal} />
+                    <PassengerSection passengers={passengerProfiles} routes={routePassengers} abrirModal={abrirModal} />
                 )}
 
                 {vista === "viajes" && (
@@ -114,39 +142,39 @@ const Home = () => {
                     {modalTipo === "chofer" && modalData && (
                         <>
                             <div className="modal-container">
-                                <img src={modalData.img} alt="" className="modal-img" />
+                                <img src={modalData.img_chofer} alt="" className="modal-img" />
                                 <div className="ml-5">
-                                    <h2 className="modal-h2">{modalData.nombre}</h2>
-                                    <p className="modal-p1"><strong>Calificación:</strong> {modalData.calificacion}</p>
+                                    <h2 className="modal-h2">{modalData?.nombre || modalData?.username || "Sin nombre"}</h2>
+                                    <p className="modal-p1"><strong>Calificación:</strong> {modalData.calificacion || "0.0"}</p>
                                 </div>
                             </div>
                             <div className="modal-container-2">
                                 <p className="modal-p2"><strong>Dirección:</strong> {modalData.direccion}</p>
                                 <p className="modal-p2"><strong>Barrio:</strong> {modalData.barrio}</p>
-                                <p className="modal-p2"><strong>Vehículo:</strong> {modalData.vehiculo.marca} {modalData.vehiculo.modelo} ({modalData.vehiculo.color})</p>
-                                <p className="modal-p2"><strong>Matrícula:</strong> {modalData.vehiculo.matricula}</p>
-                                <p className="modal-p2"><strong>Plazas:</strong> {modalData.vehiculo.plazas}</p>
+                                <p className="modal-p2"><strong>Vehículo:</strong> {modalData.vehiculo?.marca} {modalData.vehiculo?.modelo} ({modalData.vehiculo?.color})</p>
+                                <p className="modal-p2"><strong>Matrícula:</strong> {modalData.vehiculo?.matricula}</p>
+                                <p className="modal-p2"><strong>Plazas:</strong> {modalData.vehiculo?.plazas}</p>
                             </div>
                             <div className="modal-container-3">
-                                <img src={modalData.img} alt="" className="modal-img-2" />
+                                <img src={modalData.vehiculo?.img_vehiculo} alt="vehículo" className="modal-img-2" />
                             </div>
                         </>
                     )}
                     {modalTipo === "pasajero" && modalData && (
                         <>
                             <div className="modal-container">
-                                <img src={modalData.img} alt="" className="modal-img" />
+                                <img src={modalData.img_pasajero} alt="" className="modal-img" />
                                 <div className="ml-5">
-                                    <h2 className="modal-h2">{modalData.nombre}</h2>
-                                    <p className="modal-p1"><strong>Calificación:</strong> {modalData.calificacion}</p>
+                                    <h2 className="modal-h2">{modalData?.nombre || modalData?.username || "Sin nombre"}</h2>
+                                    <p className="modal-p1"><strong>Calificación:</strong> {modalData.calificacion || "0.0"}</p>
                                 </div>
                             </div>
                             <div className="modal-container-2">
-                                <p className="modal-p2"><strong>Dirección:</strong> {modalData.direccion}</p>
+                                <p className="modal-p2"><strong>Nacionalidad:</strong> {modalData.nacionalidad}</p>
                                 <p className="modal-p2"><strong>Barrio:</strong> {modalData.barrio}</p>
                             </div>
                             <div className="modal-container-3">
-                                <img src={modalData.img} alt="" className="modal-img-2" />
+                                <img src="https://www.que.es/wp-content/uploads/2021/03/GOOGLE-MAPS.jpg" alt="" className="modal-img-2" />
                             </div>
                         </>
                     )}
@@ -158,8 +186,8 @@ const Home = () => {
                             <div className="modal-container-2">
                                 <p className="modal-p2"><strong>Origen:</strong> {modalData.origen}</p>
                                 <p className="modal-p2"><strong>Destino:</strong> {modalData.destino}</p>
-                                <p className="modal-p2"><strong>Hora Salida:</strong> {modalData.horaSalida} <strong>Regreso:</strong> {modalData.horaRegreso} </p>
-                                <p className="modal-p2"><strong>Días:</strong> {modalData.dias?.join(", ")}</p>
+                                <p className="modal-p2"><strong>Hora Salida:</strong> {modalData.horaSalida || "00:00"} <strong>Regreso:</strong> {modalData.horaRegreso || "00:00"} </p>
+                                <p className="modal-p2"><strong>Días:</strong> {modalData.dias ? modalData.dias.split(",").join(", ") : "-"}</p>
                             </div>                         
                         </>
                     )}

@@ -1,16 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLogout } from '../hooks/useLogout';
 import logo from '../assets/CoPiloto-logo-4.png'
-import { getUsername } from '../utils/auth';
 
 const Header = () => {
 
+    const [username, setUsername] = useState(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-    const username = getUsername();
-
     const logout = useLogout();
+
+    useEffect(() => {
+    async function fetchUser() {
+      try {
+        const res = await fetch('http://localhost:1234/me', {
+            credentials: 'include',
+        });
+        if (res.ok) {
+            const data = await res.json();
+            setUsername(data.username);
+        } else {
+            setUsername(null);
+        }
+        } catch {
+            setUsername(null);
+        }
+    }
+    fetchUser();
+    }, []);
+
+
 
     return (
         <header className="flex items-center justify-between h-20 px-6 bg-white shadow-md md:px-8 z-20">
@@ -22,10 +40,10 @@ const Header = () => {
             <Link to="/home" className="text-2xl font-bold lg:hidden">
                 <img src={logo} alt="CoPiloto Logo" className="md:h-20 h-15" />
             </Link>
-            <p className="text-gray-500 text-3xl italic font-medium hidden lg:block">Versión Beta</p>
+            <p className="text-gray-500 text-3xl italic font-medium hidden lg:block">Versión 1.0</p>
             <div className="hidden md:flex gap-5 items-center">
                 <button  className="text-gray-500 hover:text-gray-800 hover:underline cursor-pointer text-xl">
-                    {username}
+                    {username ? username : 'Invitado'}
                 </button>
                 <a href="" target="_blank" aria-label="LinkedIn" className="text-4xl hover:scale-115 transition duration-300 ease hover:text-blue-950 cursor-pointer">
                     <i className="fa-regular fa-circle-user"></i>

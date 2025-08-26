@@ -5,8 +5,8 @@ import { handleLogout } from "../utils/auth";
 export function useLogout() {
     const navigate = useNavigate();
 
-    const logout = useCallback(() => {
-        handleLogout();
+    const logout = useCallback(async () => {
+        await handleLogout();
         navigate("/");
     }, [navigate]);
 

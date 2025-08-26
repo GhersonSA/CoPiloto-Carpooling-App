@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { handleLogin, isAuthenticated } from '../../utils/auth';
+import { isAuthenticated } from '../../utils/auth';
 
 import logo from '../../assets/CoPiloto-logo-1.png'
 import city from '../../assets/city-2.jpg';
@@ -9,12 +9,12 @@ import gLogo from '../../assets/G-black.png';
 const LoginHero = () => {
 
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isRegisterMode, setIsRegisterMode] = useState(false);
 
     const navigate = useNavigate();
     const dialogRef = useRef(null);
-
 
     const openModal = () => dialogRef.current?.showModal();
     const closeModal = () => dialogRef.current?.close();
@@ -30,54 +30,95 @@ const LoginHero = () => {
     }, []);
 
     useEffect(() => {
-        if (isAuthenticated()) {
-            navigate("/home");
+        async function checkAuth() {
+            const authenticated = await isAuthenticated();
+            if (authenticated) {
+                navigate("/home");
+            }
         }
+        checkAuth();
     }, [navigate]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        let users = JSON.parse(localStorage.getItem("users")) || [];
 
-        if (!username || !password) {
-            alert("Por favor, completa los campos.");
-            return;
-        }
-
-        if (isRegisterMode) {
-            const exists = users.find(u => u.username === username);
-            if (exists) { return alert("El usuario ya existe."); }
-
-            users.push({ username, password, role: "admin" });
-            localStorage.setItem("users", JSON.stringify(users));
-            alert("Usuario registrado con exito.");
-            setIsRegisterMode(false);
-
-            closeModal();
-            navigate("/home");
-            return;
-        }
-
-        const found = users.find(u => u.username === username && u.password === password);
-        if (!found) return alert("Credenciales incorrectas.");
-
-        if (username === "admin" && password === "admin123") {
-            handleLogin("admin", "admin");
-            closeModal();
-            navigate("/home");
+        if (isRegisterMode){
+            if (!username || !email || !password) {
+                alert("Por favor, completa los campos para registrarte.");
+                return;
+            }
         } else {
-            handleLogin(found.role, found.username);
+            if (!username || !password) {
+                alert('Por favor, completa los campos requeridos para iniciar sesión.');
+                return;
+            }
         }
 
-        closeModal();
-        navigate("/home");
+        try {
+            if (isRegisterMode) {
+            
+            const res = await fetch('http://localhost:1234/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, password }),
+            });
 
+            if (!res.ok) {
+                const error = await res.text();
+                throw new Error(error);
+            }
+
+            alert("Usuario registrado con éxito.");
+            setIsRegisterMode(false);
+            closeModal();
+            navigate("/home");
+            } else { 
+            const res = await fetch('http://localhost:1234/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+                credentials: 'include'
+            });
+
+            if (!res.ok) {
+                const error = await res.text();
+                throw new Error(error);
+            }
+
+            const data = await res.json();
+
+            alert(`Bienvenido, ${data.user.username}!`);
+            closeModal();
+            navigate("/home");
+            }
+        } catch (error) {
+            alert(error.message);
+        }
     };
 
-    const handleGuest = () => {
-        handleLogin("guest", "Modo Invitado");
+    const handleGuest = async () => {
+        try {
+        const res = await fetch('http://localhost:1234/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: 'invitado', password: 'invitado123' }),
+            credentials: 'include'
+        });
+
+        if (!res.ok) {
+            const error = await res.text();
+            throw new Error(error);
+        }
+
         closeModal();
         navigate("/home");
+        } catch (error) {
+            alert(error.message);
+        }
+        /*
+        localStorage.setItem('user', JSON.stringify({ username: 'Invitado', role: 'guest' }));
+        closeModal();
+        navigate("/home"); */
     }
 
     return (
@@ -125,8 +166,18 @@ const LoginHero = () => {
                         <h2 className="text-primary text-6xl font-bold mb-2">{isRegisterMode ? "Registrarse" : "Iniciar Sesión"}</h2>
                         <p className="text-xl italic">{isRegisterMode ? "Crea una cuenta nueva" : "Encuentra tu recorrido ideal con CoPiloto"}</p>
 
-                        <label placeholder="Ingresa tu nombre" className="text-left min-[450px]:ml-20 mt-2.5"><span>Nombre</span><span className="text-red-600">*</span></label>
+                        <label placeholder="Ingresa tu nombre" className="text-left min-[450px]:ml-20 mt-2.5"><span>Usuario</span><span className="text-red-600">*</span></label>
                         <input type="text" placeholder="Usuario" value={username} onChange={(e) => setUsername(e.target.value)} className="form-input" required />
+
+                        {isRegisterMode && (
+                            <>
+                                <label className="text-left min-[450px]:ml-20 mt-2.5">
+                                <span>Correo Electrónico</span>
+                                <span className="text-red-600">*</span>
+                                </label>
+                                <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-input" required />
+                            </>
+                        )}
 
                         <label placeholder="Ingresa tu contraseña" className="text-left min-[450px]:ml-20 mt-2.5"><span>Contraseña</span><span className="text-red-600">*</span></label>
                         <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} className="form-input" required />

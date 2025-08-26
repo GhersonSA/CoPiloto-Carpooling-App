@@ -1,50 +1,54 @@
 import DriverCard from "../HomeCards/DriverCard";
+import { useFetchData } from "../../hooks/useFetchData";
 
-const DriverSection = ({ drivers, routes, abrirModal, busqueda = "" }) => {
+const DriverSection = ({ drivers, abrirModal, busqueda = "" }) => {
+
+    const routes = useFetchData("routes");
+
     const normalizeText = (text) => (text || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-
     const query = normalizeText(busqueda);
 
     const filtrados = drivers.filter((driver) => {
-        const ruta = routes.find((r) => r.choferId === driver.id);
-
-        return (
-            normalizeText(driver.nombre).includes(query) ||
-            normalizeText(driver?.vehiculo?.marca).includes(query) ||
-            normalizeText(ruta?.origen).includes(query) ||
-            normalizeText(ruta?.destino).includes(query)
+        const nombreMatch = normalizeText(driver.nombre).includes(query);
+        const marcaMatch = normalizeText(driver?.vehiculo?.marca).includes(query);
+        const rutasMatch = driver.routes?.some(route =>
+            normalizeText(route.origen).includes(query) ||
+            normalizeText(route.destino).includes(query)
         );
+        return nombreMatch || marcaMatch || rutasMatch;
     });
 
     return (
         <div className="flex flex-wrap justify-center lg:justify-start gap-5 m-5">
             {filtrados.length === 0 ? (
-                <p className="text-gray-500 text-xl italic">
-                    No se encontraron choferes
-                </p>
-            ) :
-            (filtrados.map((driver) => {
-                const ruta = routes.find(r => r.choferId === driver.id);
+                <p className="text-gray-500 text-xl italic">No se encontraron choferes</p>
+            ) : (
+                filtrados.map((driver) => {
 
-                return (
-                    <DriverCard
-                        key={driver.id}
-                        img={driver.img}
-                        nombre={driver.nombre}
-                        marca={driver.vehiculo.marca}
-                        plazas={driver.vehiculo.plazas}
-                        origen={ruta?.origen}
-                        destino={ruta?.destino}
-                        horaSalida={ruta?.horaSalida || "-"}
-                        horaLlegada={ruta?.horaLlegada || "-"}
-                        horaRegreso={ruta?.horaRegreso || "-"}
-                        onClick={() => abrirModal("chofer", driver)}
-                    />
-                );
-            })
-        )}
+                    const driverRoutes = routes.filter(route => route.driver_id === driver.id);
+
+                    return (
+                        <DriverCard
+                            key={driver.id}
+                            img={driver.img_chofer}
+                            nombre={driver.nombre || driver.username}
+                            direccion={driver.direccion}
+                            barrio={driver.barrio}
+                            marca={driver.vehiculo?.marca}
+                            modelo={driver.vehiculo?.modelo}
+                            color={driver.vehiculo?.color}
+                            matricula={driver.vehiculo?.matricula}
+                            plazas={driver.vehiculo?.plazas}
+                            imgVehiculo={driver.vehiculo?.img_vehiculo}
+                            rutas={driverRoutes}
+                            onClick={() => abrirModal("chofer", driver)}
+                        />
+                    );
+                })
+            )}
         </div>
     );
 };
+
 
 export default DriverSection;

@@ -1,35 +1,33 @@
-export const handleLogin = (role, username) => {
-    const authData = { role, username };
-    localStorage.setItem("auth", JSON.stringify(authData));
+/* export async function handleLogout() {
+    await fetch('http://localhost:1234/logout', {
+    method: 'POST',
+    credentials: 'include',
+  });
+} */
+
+export const handleLogout = async () => {
+  try {
+    const res = await fetch('http://localhost:1234/logout', {
+      method: 'POST',
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error('Error al cerrar sesión');
+
+    localStorage.removeItem('user');
+    
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-export const handleLogout = () => {
-    localStorage.removeItem("auth");
-};
-
-export const isAuthenticated = () => {
-    const auth = localStorage.getItem("auth");
-    if (!auth) return false;
-    const { role } = JSON.parse(auth);
-    return role === "user" || role === "guest" || role === "admin";
-};
-
-export const getUserRole = () => {
-    const auth = localStorage.getItem("auth");
-    if (!auth) return null;
+export async function isAuthenticated() {
     try {
-        return JSON.parse(auth).role;
-    } catch {
-        return null;
-    }
-};
-
-export const getUsername = () => {
-    const auth = localStorage.getItem("auth");
-    if (!auth) return null;
-    try {
-        return JSON.parse(auth).username;
-    } catch {
-        return null;
-    }
-};
+    const res = await fetch('http://localhost:1234/protected', {
+      method: "POST",
+      credentials: 'include',
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}

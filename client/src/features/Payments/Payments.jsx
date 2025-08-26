@@ -1,45 +1,36 @@
-import { useState } from "react";
-import { useRoleData } from "../../hooks/useRoleData";
+import { useState, useMemo } from "react";
+import { useFetchData } from "../../hooks/useFetchData";
 
 const Payments = () => {
 
-    const { passengers, payments } = useRoleData();
+    const passengers = useFetchData("passengers");
+    const payments = useFetchData("payments");
 
     const [filterStatus, setFilterStatus] = useState("Todos");
     const [order, setOrder] = useState("recientes");
-
-    const idDelChoferActual = 1; {/* Hasta crear el login luego user.id */}
-
-    const currentDriver = payments.filter(p => p.choferId === idDelChoferActual);
 
     function cutName(nombreCompleto) {
         const partes = nombreCompleto.split(" ");
         if (partes.length === 1) return partes[0];
         return `${partes[0]} ${partes[1][0].toUpperCase()}`;
     }
-    const allPayments = currentDriver.flatMap(p => p.pagos.map(pago => {
-        const pasajero = passengers.find(passengers => passengers.id === p.pasajeroId);
-            return {
-                pasajeroId: p.pasajeroId,
-                choferId: p.choferId,
-                nombre: cutName(pasajero?.nombre),
-                direccion: pasajero?.direccion,
-                ...pago
-            };
-        })
-    );
 
-    const filteredPayments = allPayments.filter(p => {
+    const filteredPayments = useMemo(() => {
+    if (!payments || !passengers) return [];
+
+    return payments
+        .filter(pago => {
         if (filterStatus === "Todos") return true;
-        return (filterStatus === "Pagado" && p.estado === "Completado") || (filterStatus === "Pendiente" && p.estado === "Pendiente");
+        if (filterStatus === "Pagado") return pago.estado === "completado";
+        if (filterStatus === "Pendiente") return pago.estado === "pendiente";
+        return true;
         })
         .sort((a, b) => {
-            if (order === "recientes") {
-                return new Date(b.fecha) - new Date(a.fecha); 
-            } else {
-                return new Date(a.fecha) - new Date(b.fecha);
-            }
+        const fechaA = new Date(a.fecha);
+        const fechaB = new Date(b.fecha);
+        return order === "recientes" ? fechaB - fechaA : fechaA - fechaB;
         });
+    }, [payments, passengers, filterStatus, order]);
 
     return (
         <section className="section-container">
@@ -75,20 +66,26 @@ const Payments = () => {
                             </tr>
                         </thead>
                         <tbody className="min-h-table">
-                            {filteredPayments.map((pago, index) => (
+                            {filteredPayments?.map((pago, index) => {
+                                const pasajero = passengers?.find(pass => pass.id === pago.pasajero_id);
+                                if (!pasajero) return null; 
+
+                                return (
                                 <tr key={index} className="h-20 hover:bg-gray-200">
-                                    <td>{pago.pasajeroId}</td>
-                                    <td>{pago.nombre}</td>
-                                    <td className="hidden sm:table-cell text-gray-500">{pago.direccion}</td>
-                                    <td className="text-gray-500">{pago.fecha}</td>
-                                    <td>{pago.pago}€</td>
+                                    <td>{pago.id}</td>
+                                    <td>{cutName(pasajero.nombre)}</td>
+                                    <td className="hidden sm:table-cell text-gray-500">{pasajero.barrio}</td>
+                                    <td className="text-gray-500">{pago.fecha ? new Date(pago.fecha).toLocaleDateString("es-ES") : 'N/A'}</td>
+                                    <td>{(pago.pago)}€</td>
                                     <td>
-                                        <span className={`${pago.estado === "Completado" ? "bg-green-400 text-green-100" : "bg-red-400 text-red-100"} px-3 py-2 rounded-xl`}>
-                                            {pago.estado === "Completado" ? "Pagado" : "Pendiente"}
+                                        <span className={`${pago.estado === "completado" ? "bg-green-400 text-green-100" : "bg-red-400 text-red-100"} px-3 py-2 rounded-xl`}>
+                                            {pago.estado === "completado" ? "Pagado" : "Pendiente"}
                                         </span>
                                     </td>
                                 </tr>
-                            ))}
+                                );
+                            })
+                        }
                         </tbody>
                     </table>
                 </div>

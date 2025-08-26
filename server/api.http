@@ -1,0 +1,246 @@
+### Obtener todos los usuarios
+GET http://localhost:1234/users
+
+### Obtener todos los usuarios por id
+GET http://localhost:1234/users/1
+
+### Crear usuario
+POST http://localhost:1234/users
+Content-Type: application/json
+
+{
+  "nombre": "Gherson",
+  "email": "gherson@example.com",
+  "password": "1234",
+  "tipo_usuario": "chofer"
+}
+
+### Actualizar usuario
+PUT http://localhost:1234/users/5
+Content-Type: application/json
+
+{
+  "nombre": "Gherson Actualizado",
+  "email": "gherson3@example.com",
+  "tipo_usuario": "pasajero"
+}
+
+### Borrar usuario
+DELETE http://localhost:1234/users/3
+
+
+
+
+
+### USERS
+
+
+### Crear usuario
+POST http://localhost:1234/users
+Content-Type: application/json
+
+{
+  "nombre": "Juan Perez",
+  "email": "juan@example.com",
+  "password": "123456",
+  "tipo_usuario": "chofer",
+  "img": "url_img",
+  "direccion": "Calle Falsa 123",
+  "barrio": "Centro",
+  "nacionalidad": "MX",
+  "trabajo": "Conductor",
+  "vehiculo_marca": "Toyota",
+  "vehiculo_modelo": "Corolla",
+  "vehiculo_color": "Rojo",
+  "vehiculo_matricula": "ABC123",
+  "vehiculo_plazas": 4,
+  "calificacion_promedio": 4.7
+}
+
+### Obtener todos los usuarios
+GET http://localhost:1234/users
+
+### Obtener usuario por id
+GET http://localhost:1234/users/1
+
+### Actualizar usuario
+PUT http://localhost:1234/users/1
+Content-Type: application/json
+
+{
+  "nombre": "Juan Pérez Actualizado",
+  "email": "juan_updated@example.com",
+  "tipo_usuario": "pasajero",
+  "img": "url_img_actualizada",
+  "direccion": "Calle Nueva 456",
+  "barrio": "Norte",
+  "nacionalidad": "MX",
+  "trabajo": "Desarrollador",
+  "vehiculo_marca": "Honda",
+  "vehiculo_modelo": "Civic",
+  "vehiculo_color": "Azul",
+  "vehiculo_matricula": "XYZ789",
+  "vehiculo_plazas": 5,
+  "calificacion_promedio": 4.8
+}
+
+### Eliminar usuario
+DELETE http://localhost:1234/users/1
+
+
+### PAYMENTS
+
+
+### Crear pago
+POST http://localhost:1234/payments
+Content-Type: application/json
+
+{
+  "pasajero_id": 2,
+  "chofer_id": 3,
+  "ruta_id": 1,
+  "fecha": "2025-08-09",
+  "pago": 150.00,
+  "estado": "pendiente"
+}
+
+### Obtener todos los pagos
+GET http://localhost:1234/payments
+
+### Obtener pago por id
+GET http://localhost:1234/payments/1
+
+### Actualizar pago
+PUT http://localhost:1234/payments/1
+Content-Type: application/json
+
+{
+  "pasajero_id": 2,
+  "chofer_id": 3,
+  "ruta_id": 1,
+  "fecha": "2025-08-10",
+  "pago": 150.00,
+  "estado": "pagado"
+}
+
+### Eliminar pago
+DELETE http://localhost:1234/payments/1
+
+
+### ROUTES
+
+### Crear ruta
+POST http://localhost:1234/routes
+Content-Type: application/json
+
+{
+  "chofer_id": 3,
+  "origen": "Ciudad A",
+  "destino": "Ciudad B",
+  "dias": "Lunes, Miércoles, Viernes",
+  "hora_salida": "08:00",
+  "hora_llegada": "10:00",
+  "hora_regreso": "18:00",
+  "hora_llegada_regreso": "20:00"
+}
+
+### Obtener todas las rutas
+GET http://localhost:1234/routes
+
+### Obtener ruta por id
+GET http://localhost:1234/routes/1
+
+### Actualizar ruta
+PUT http://localhost:1234/routes/1
+Content-Type: application/json
+
+{
+  "chofer_id": 3,
+  "origen": "Ciudad A",
+  "destino": "Ciudad C",
+  "dias": "Lunes, Viernes",
+  "hora_salida": "08:30",
+  "hora_llegada": "11:00",
+  "hora_regreso": "17:30",
+  "hora_llegada_regreso": "20:30"
+}
+
+### Eliminar ruta
+DELETE http://localhost:1234/routes/1
+
+
+### ROUTE-PASSENGERS
+
+### Añadir pasajero a ruta
+POST http://localhost:1234/route-passengers
+Content-Type: application/json
+
+{
+  "ruta_id": 1,
+  "pasajero_id": 2
+}
+
+### Obtener todos los pasajeros en rutas
+GET http://localhost:1234/route-passengers
+
+### Obtener registro por id
+GET http://localhost:1234/route-passengers/1
+
+### Actualizar registro
+PUT http://localhost:1234/route-passengers/1
+Content-Type: application/json
+
+{
+  "ruta_id": 1,
+  "pasajero_id": 3
+}
+
+### Eliminar registro
+DELETE http://localhost:1234/route-passengers/1
+
+
+### RATINGS
+
+### Crear calificación
+POST http://localhost:1234/ratings
+Content-Type: application/json
+
+{
+  "de_usuario_id": 3,
+  "para_usuario_id": 2,
+  "tipo": "chofer",
+  "comentario": "Muy buen conductor, puntual y amable",
+  "calificacion": 5
+}
+
+### Obtener todas las calificaciones
+GET http://localhost:1234/ratings
+
+### Obtener calificación por id
+GET http://localhost:1234/ratings/1
+
+### Actualizar calificación
+PUT http://localhost:1234/ratings/1
+Content-Type: application/json
+
+{
+  "de_usuario_id": 3,
+  "para_usuario_id": 2,
+  "tipo": "chofer",
+  "comentario": "Actualización: excelente conductor",
+  "calificacion": 5
+}
+
+### Eliminar calificación
+DELETE http://localhost:1234/ratings/1
+
+###
+http://localhost:1234/me
+
+###
+POST http://localhost:1234/roles
+Content-Type: application/json
+
+###
+curl http://localhost:1234/roles/mis-roles
+Content-Type: application/json
