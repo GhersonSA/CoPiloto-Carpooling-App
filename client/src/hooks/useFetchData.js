@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BACKEND_URL } from '../config';
 
 export function useFetchData(endpoint) {
   const [data, setData] = useState([]);
@@ -7,7 +8,7 @@ export function useFetchData(endpoint) {
     async function fetchData() {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`http://localhost:1234/${endpoint}`, {
+        const res = await fetch(`${BACKEND_URL}/${endpoint}`, {
           method: 'GET',
           credentials: 'include',
           headers: token

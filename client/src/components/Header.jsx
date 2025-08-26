@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLogout } from '../hooks/useLogout';
+import { BACKEND_URL } from '../config';
 import logo from '../assets/CoPiloto-logo-4.png'
 
 const Header = () => {
@@ -12,7 +13,7 @@ const Header = () => {
     useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch('http://localhost:1234/me', {
+        const res = await fetch(`${BACKEND_URL}/me`, {
             credentials: 'include',
         });
         if (res.ok) {
