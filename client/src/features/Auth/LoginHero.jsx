@@ -1,5 +1,6 @@
 import {useState, useEffect, useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BACKEND_URL } from '../../config';
 import { isAuthenticated } from '../../utils/auth';
 
 import logo from '../../assets/CoPiloto-logo-1.png'
@@ -57,7 +58,7 @@ const LoginHero = () => {
         try {
             if (isRegisterMode) {
             
-            const res = await fetch('http://localhost:1234/register', {
+            const res = await fetch(`${BACKEND_URL}/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, email, password }),
@@ -73,7 +74,7 @@ const LoginHero = () => {
             closeModal();
             navigate("/home");
             } else { 
-            const res = await fetch('http://localhost:1234/login', {
+            const res = await fetch(`${BACKEND_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
@@ -98,7 +99,7 @@ const LoginHero = () => {
 
     const handleGuest = async () => {
         try {
-        const res = await fetch('http://localhost:1234/login', {
+        const res = await fetch(`${BACKEND_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: 'invitado', password: 'invitado123' }),

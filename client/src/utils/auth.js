@@ -1,9 +1,3 @@
-/* export async function handleLogout() {
-    await fetch('http://localhost:1234/logout', {
-    method: 'POST',
-    credentials: 'include',
-  });
-} */
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const handleLogout = async () => {
