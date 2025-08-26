@@ -4,10 +4,11 @@
     credentials: 'include',
   });
 } */
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const handleLogout = async () => {
   try {
-    const res = await fetch('http://localhost:1234/logout', {
+    const res = await fetch(`${BACKEND_URL}/logout`, {
       method: 'POST',
       credentials: 'include',
     });
@@ -22,7 +23,7 @@ export const handleLogout = async () => {
 
 export async function isAuthenticated() {
     try {
-    const res = await fetch('http://localhost:1234/protected', {
+    const res = await fetch(`${BACKEND_URL}/protected`, {
       method: "POST",
       credentials: 'include',
     });
