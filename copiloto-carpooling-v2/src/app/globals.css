@@ -1,0 +1,247 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import "tailwindcss";
+
+/*========== VARIABLES ==========*/
+@theme {
+    /*========== COLORS ==========*/
+    --color-primary: #090098;
+    --color-secondary: #0f0;
+
+    --bg-color: #fff;
+    --bg-color-dark: #000;
+
+    --text-color: #fff;
+    --text-color-dark: #000;
+
+    /*========== TYPOGRAPHY ==========*/
+    --font-primary: "Inter", system-ui, sans-serif;
+    --font-secondary: "Roboto", system-ui, sans-serif;
+
+    /*========== BREAKPOINT ==========*/
+    --breakpoint-xsm: 450px;
+
+}
+
+/*========== REUSABLE ==========*/
+
+/* Global */
+.section-container {
+    @apply w-full max-w-[1920px] mx-auto;
+}
+.section-h2 {
+    @apply m-5 mt-10 mb-10 text-5xl font-medium;
+}
+
+.modal-button {
+    @apply px-4 py-2 sm:px-8 sm:py-3 font-semibold text-center text-2xl gap-5 cursor-pointer border-b-3 transition;
+}
+/* Header */
+.mobile-menu-button {
+    @apply text-gray-800 hover:text-blue-500 active:text-primary;
+}
+
+/* Aside */
+.aside-botton {
+    @apply flex items-center h-15 px-4 mx-6 text-center text-3xl m-4 font-secondary hover:bg-white/15 cursor-pointer transition-colors duration-300 ease-in-out rounded-lg;
+}
+
+/* Login Hero */
+.social-button {
+    @apply text-3xl md:text-4xl hover:scale-115 transition duration-300 ease-in-out hover:text-primary cursor-pointer;
+}
+
+.form-input {
+    @apply w-full border border-gray-300 rounded-lg text-lg h-12 px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all box-border;
+}
+.form-input-login {
+    @apply border border-gray-300 rounded-lg text-lg h-12 px-4 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all box-border mx-20;
+}
+/* Home */
+.home-buttons {
+    @apply w-full h-full text-center text-2xl gap-5 cursor-pointer border-b-3 transition hover:bg-white/50 hover:text-blue-950;
+}
+.home-titles {
+    @apply text-4xl sm:text-5xl font-bold text-blue-900 mt-2 sm:mt-8 mb-8 sm:mb-10;
+}
+
+.modal-container {
+    @apply flex justify-center items-center gap-5 mt-5;
+}
+.modal-container-2 {
+    @apply flex flex-col m-5 mt-10 mb-10 sm:mt-6 sm:mb-6 sm:m-10;
+}
+.modal-container-3 {
+    @apply flex justify-center items-center mt-5;
+}
+.modal-img {
+    @apply w-50 h-50 sm:w-60 sm:h-60 object-cover rounded-4xl;
+}
+.modal-img-2 {
+    @apply rounded-4xl w-11/12 h-60 sm:h-80 sm:w-11/12 object-cover;
+}
+.modal-trip-img {
+    @apply rounded-4xl w-110 h-100 sm:w-150 sm:h-140;
+}
+.modal-h2 {
+    @apply text-blue-950 text-2xl sm:text-3xl font-bold;
+}
+.modal-p1 {
+    @apply text-gray-500 text-xl sm:text-2xl sm:mt-2;
+}
+.modal-p2 {
+    @apply text-gray-500 text-2xl md:text-3xl;
+}
+
+
+.home-cards {
+    @apply bg-white font-secondary h-150 w-120 rounded-xl p-4 pt-4 hover:scale-105 transition-transform duration-300 shadow-lg;
+}
+
+.trip-cards {
+    @apply bg-white font-secondary h-130 w-120 rounded-xl p-4 pt-4 hover:scale-105 transition-transform duration-300 shadow-lg;
+}
+
+.img-driver-cards-container {
+    @apply bg-gray-300 w-110 h-80 rounded-4xl mx-auto;
+}
+.img-home-cards-container {
+    @apply bg-gray-300 w-110 h-100 rounded-4xl mx-auto;
+}
+.img-home-cards {
+    @apply object-cover object-center w-full h-full rounded-4xl;
+}
+
+/* Maps Home */
+.marker-label {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 16px;
+}
+
+/* Maps */
+.pac-container {
+  z-index: 10000 !important;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pac-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.pac-item:hover {
+  background-color: #f3f4f6;
+}
+
+/* Dashboard */
+.top-cards-container {
+    @apply flex flex-col justify-center bg-blue-950/90 h-50 w-full rounded-4xl p-4 pt-4 shadow-lg transform hover:scale-[0.98] ease-in-out  transition-all duration-200;
+}
+.top-cards-span {
+    @apply text-white text-2xl sm:text-4xl mb-2 sm:mb-5 sm:ml-4;
+}
+.top-cards-strong {
+    @apply text-4xl sm:text-5xl text-center text-yellow-500;
+}
+
+.mid-cards-container {
+    @apply bg-white min-h-50 lg:min-h-100 col-span-1 rounded-4xl p-4 pt-4 shadow-lg transform hover:scale-[0.98] ease-in-out  transition-all duration-200;
+}
+
+.bot-cards-container {
+    @apply bg-white min-h-50 lg:min-h-100 col-span-1 rounded-4xl p-4 pt-4 shadow-lg transform hover:scale-[0.98] ease-in-out  transition-all duration-200;
+}
+.bot-cards-map {
+    @apply flex items-center sm:ml-4 mt-4 mb-2;
+}
+
+.cards-h3 {
+    @apply text-gray-500 text-2xl sm:text-4xl mb-2 mt-2 sm:mb-5 sm:ml-4;
+}
+.cards-img {
+    @apply w-25 h-25 rounded-full;
+}
+.cards-name {
+    @apply text-2xl sm:text-3xl font-bold text-blue-950 ml-2;
+}
+.cards-p {
+    @apply text-2xl sm:text-3xl text-black font-semibold;
+}
+
+/* Passenger */
+.table-border {
+    @apply border border-[#d8f0ff];
+}
+.passenger-modal-p {
+    @apply text-gray-500 text-xl sm:text-2xl sm:mt-2;
+}
+
+/* Toast Animations */
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-out {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.animate-slide-in {
+    animation: slide-in 0.3s ease-out forwards;
+}
+
+.animate-slide-out {
+    animation: slide-out 0.3s ease-in forwards;
+}
+
+
+/*========== LAYOUT BASE ==========*/
+@layer base {
+    *, *::before, *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    html {
+        font-size: 62.5%;
+        scroll-behavior: smooth;
+        scrollbar-color: var(--text-color) #232427;
+        color: var(--text-color-dark);
+    }
+    body {
+        background: var(--bg-color);
+        color: var(--text-color-dark);
+        font-family: var(--font-primary);
+    }
+    input,
+    button,
+    textarea {
+        border: none;
+        outline: none;
+    }
+    ul, li {
+        list-style: none;
+    }
+    a {
+        text-decoration: none;
+    }
+}
+

@@ -1,0 +1,70 @@
+# ============================================
+# CoPiloto Monorepo - Root .gitignore
+# ============================================
+
+# Dependencies
+node_modules/
+
+# Environment variables (CRITICAL - never commit secrets)
+.env
+.env.*
+!.env.example
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Expo / React Native
+.expo/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+.metro-health-check*
+expo-env.d.ts
+
+# User uploads (generated at runtime)
+**/public/uploads/*
+!**/public/uploads/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-workspace
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.pem
+*.tsbuildinfo
+.vercel
+.temp
+.tmp
+pids/
+*.pid
+*.seed
+*.pid.lock
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
