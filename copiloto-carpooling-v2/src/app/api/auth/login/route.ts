@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
+
+    console.log("BACKEND_URL:", process.env.BACKEND_URL);
+  console.log("NEXT_PUBLIC_BACKEND_URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
+  console.log("Using backendUrl:", backendUrl);
   const cookieHeader = req.headers.get("cookie") || "";
 
   try {
