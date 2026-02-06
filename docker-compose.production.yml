@@ -24,7 +24,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "4000:4000"
     depends_on:
       postgres:
         condition: service_healthy
@@ -32,7 +32,7 @@ services:
       NODE_ENV: production
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/copiloto_db
       JWT_SECRET: ${JWT_SECRET}
-      PORT: 3000
+      PORT: 4000
       FRONTEND_URL: ${FRONTEND_URL:-https://copiloto-carpooling.vercel.app}
       ADMIN_PASS: ${ADMIN_PASS}
       GUEST_PASS: ${GUEST_PASS}
