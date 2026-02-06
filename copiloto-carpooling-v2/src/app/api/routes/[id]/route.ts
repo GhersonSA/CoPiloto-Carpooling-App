@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const backend = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
+const backend = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   const cookieHeader = req.headers.get("cookie") || "";

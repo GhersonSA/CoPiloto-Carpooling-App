@@ -7,7 +7,7 @@ import PhoneInput from "./PhoneInput";
 import { useGuest } from "@/hooks/useGuest";
 import AddressAutocomplete from "@/components/Map/AddressAutocomplete";
 
-// const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3000";
+// const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
 
 const choferImg = [
     "/assets/imgChofer1.png",

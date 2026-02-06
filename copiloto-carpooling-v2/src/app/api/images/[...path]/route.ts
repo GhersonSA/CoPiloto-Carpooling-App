@@ -6,7 +6,7 @@ export async function GET(
 ) {
   const { path } = await params;
   const imagePath = path.join("/");
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
+  const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
 
   try {
     const imageUrl = `${backendUrl}/${imagePath}`;
