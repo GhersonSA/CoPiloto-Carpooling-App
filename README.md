@@ -1,12 +1,10 @@
-<p align="center">
-  <img src="copiloto-carpooling-v2/public/assets/CoPiloto-preview.png.png" alt="CoPiloto Logo" width="397" height="695"/>
-</p>
-
-# CoPiloto Carpooling
+# CoPiloto Carpooling App
 
 Aplicación de carpooling para compartir viajes entre usuarios. Incluye autenticación con Google OAuth, gestión de viajes, búsqueda en tiempo real y notificaciones.
 
-
+<p align="center">
+  <img src="copiloto-carpooling-v2/public/assets/CoPiloto-preview.png" alt="CoPiloto Logo" width="397" height="695"/>
+</p>
 
 ## Estructura del proyecto
 
