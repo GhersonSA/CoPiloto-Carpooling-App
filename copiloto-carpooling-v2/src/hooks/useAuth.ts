@@ -36,7 +36,6 @@ export function useAuth() {
 
       if (res.ok) {
         const data = await res.json();
-        console.log("Sincronización Google exitosa:", data);
         setUser(data.user || data);
         return true;
       }

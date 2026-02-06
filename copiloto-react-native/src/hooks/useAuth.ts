@@ -45,7 +45,6 @@ export function useAuthProvider() {
         setUser(response.data);
       }
     } catch (error) {
-      console.log("No autenticado");
       await AsyncStorage.removeItem("token");
     } finally {
       setLoading(false);

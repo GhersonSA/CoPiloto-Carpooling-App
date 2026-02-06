@@ -215,8 +215,6 @@ const Profile = () => {
             // Extraer tipo y preparar datos sin la propiedad tipo duplicada
             const { tipo, ...data } = formRole;
 
-            console.log("Enviando actualización de rol:", { tipo, data });
-
             const res = await fetch(`/api/roles`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

@@ -15,7 +15,6 @@ export async function GET(
     });
     
     if (!res.ok) {
-      console.log("Vehículo no encontrado para driver_profile_id:", id);
       return NextResponse.json({}, { status: res.status });
     }
     

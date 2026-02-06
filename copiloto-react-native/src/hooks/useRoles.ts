@@ -19,7 +19,6 @@ export function useRoles() {
       const response = await rolesAPI.getByUserId(user!.id);
       setRoles(response.data);
     } catch (error) {
-      console.log("Error fetching roles:", error);
     } finally {
       setLoading(false);
     }

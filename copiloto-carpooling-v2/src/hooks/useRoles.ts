@@ -25,7 +25,6 @@ export function useRoles(user?: { id: number } | null, userLoading?: boolean) {
         throw new Error("Error al obtener roles");
       }
       const data = await res.json();
-      console.log("Roles cargados:", data);
       setRoles(data);
     } catch (err) {
       console.error("Error fetching roles:", err);

@@ -64,7 +64,6 @@ export class UploadService {
       
       if (existsSync(filePath)) {
         await unlink(filePath);
-        console.log(`Imagen anterior eliminada: ${filePath}`);
       }
     } catch (error) {
       // No lanzar error si falla la eliminación, solo loguearlo

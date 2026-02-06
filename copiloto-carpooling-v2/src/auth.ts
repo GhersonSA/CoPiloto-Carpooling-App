@@ -42,7 +42,6 @@ const config: NextAuthConfig = {
                 account.providerAccountId,
               ]
             );
-            console.log("Usuario de Google creado:", email);
           }
         }
         return true;
