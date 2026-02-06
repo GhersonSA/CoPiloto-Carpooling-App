@@ -1,0 +1,43 @@
+services:
+  # ───── PostgreSQL ─────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: copiloto_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ───── Backend (NestJS) ─────
+  backend:
+    build:
+      context: ./copiloto-nest-backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/copiloto_db
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 4000
+      FRONTEND_URL: ${FRONTEND_URL:-https://copiloto-carpooling.vercel.app}
+      ADMIN_PASS: ${ADMIN_PASS}
+      GUEST_PASS: ${GUEST_PASS}
+    volumes:
+      - backend_uploads:/app/public/uploads
+
+volumes:
+  pgdata:
+  backend_uploads:

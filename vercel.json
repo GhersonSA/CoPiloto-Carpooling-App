@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd copiloto-carpooling-v2 && npm install && npm run build",
+  "outputDirectory": "copiloto-carpooling-v2/.next",
+  "framework": "nextjs",
+  "installCommand": "cd copiloto-carpooling-v2 && npm install"
+}

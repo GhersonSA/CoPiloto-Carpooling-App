@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // output: "standalone", // ⬅ Solo para Docker, desactivado para Vercel
   outputFileTracingRoot: path.join(__dirname),
   typescript: {
     ignoreBuildErrors: true,
