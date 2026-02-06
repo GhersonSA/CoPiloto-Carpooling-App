@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="copiloto-carpooling-v2/public/assets/CoPiloto-logo-1.png" alt="CoPiloto Logo" width="200" height="350"/>
+  <img src="copiloto-carpooling-v2/public/assets/CoPiloto-preview.png.png" alt="CoPiloto Logo" width="397" height="695"/>
 </p>
 
 # CoPiloto Carpooling
