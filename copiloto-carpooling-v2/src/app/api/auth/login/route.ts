@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
-
-    console.log("BACKEND_URL:", process.env.BACKEND_URL);
-  console.log("NEXT_PUBLIC_BACKEND_URL:", process.env.NEXT_PUBLIC_BACKEND_URL);
-  console.log("Using backendUrl:", backendUrl);
   const cookieHeader = req.headers.get("cookie") || "";
 
   try {
@@ -67,8 +63,11 @@ export async function POST(req: NextRequest) {
     }
     
     return response;
-  } catch (error) {
-    console.error("Error en proxy /api/auth/login:", error);
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error("Error en proxy /api/auth/login:", err.message);
+    console.error("Error stack:", err.stack);
+    console.error("Error name:", err.name);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
