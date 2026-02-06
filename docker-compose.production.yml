@@ -29,6 +29,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
+      NODE_ENV: production
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/copiloto_db
       JWT_SECRET: ${JWT_SECRET}
       PORT: 4000
