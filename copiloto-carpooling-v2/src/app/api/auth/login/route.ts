@@ -64,10 +64,7 @@ export async function POST(req: NextRequest) {
     
     return response;
   } catch (error: unknown) {
-    const err = error as Error;
-    console.error("Error en proxy /api/auth/login:", err.message);
-    console.error("Error stack:", err.stack);
-    console.error("Error name:", err.name);
+    console.error("Error en proxy /api/auth/login:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
