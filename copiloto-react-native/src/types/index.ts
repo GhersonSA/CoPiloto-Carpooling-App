@@ -142,4 +142,5 @@ export type MainTabParamList = {
   Passengers: undefined;
   Payments: undefined;
   Profile: undefined;
+  Routes: undefined;
 };

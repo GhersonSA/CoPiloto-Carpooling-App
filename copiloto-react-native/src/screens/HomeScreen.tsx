@@ -72,6 +72,7 @@ const openWhatsApp = (telefono?: string, nombre?: string) => {
 export default function HomeScreen() {
   const { user } = useAuth();
   const mapRef = useRef<MapView>(null);
+  const navigation = require('@react-navigation/native').useNavigation();
 
   // Data
   const [drivers, setDrivers] = useState<any[]>([]);
@@ -347,46 +348,67 @@ export default function HomeScreen() {
         ))}
       </MapView>
 
-      {/* Filter Controls */}
+      {/* ── Filter Controls ── */}
       <View
-        className="absolute top-4 left-0 right-0 z-20"
-        style={{ flexDirection: 'row', justifyContent: 'center', gap: 8, paddingHorizontal: 16 }}
+        style={{
+          position: 'absolute',
+          top: 12,
+          alignSelf: 'center',
+          zIndex: 20,
+          flexDirection: 'row',
+          backgroundColor: '#fff',
+          borderRadius: 50,
+          padding: 6,
+          gap: 6,
+          elevation: 6,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 3 },
+          shadowOpacity: 0.18,
+          shadowRadius: 6,
+        }}
       >
         {([
-          { key: 'todo' as FilterType, label: 'Todo', bg: '#172554' },
-          { key: 'chofer' as FilterType, label: 'Choferes', bg: '#1d4ed8' },
-          { key: 'pasajero' as FilterType, label: 'Pasajeros', bg: '#16a34a' },
-        ]).map((btn) => (
-          <TouchableOpacity
-            key={btn.key}
-            onPress={() => { setFilter(btn.key); setSelectedPoint(null); }}
-            disabled={!!selectedPoint}
-            style={{
-              backgroundColor: filter === btn.key ? btn.bg : '#fff',
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-              borderRadius: 50,
-              borderWidth: 2,
-              borderColor: btn.bg,
-              opacity: selectedPoint ? 0.5 : 1,
-              elevation: 3,
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.15,
-              shadowRadius: 4,
-            }}
-          >
-            <Text
+          { key: 'todo' as FilterType, label: 'Todo', icon: 'location' as const, bg: '#172554' },
+          { key: 'chofer' as FilterType, label: 'Choferes', icon: 'car' as const, bg: '#1d4ed8' },
+          { key: 'pasajero' as FilterType, label: 'Pasajeros', icon: 'walk' as const, bg: '#16a34a' },
+        ]).map((btn) => {
+          const isActive = filter === btn.key;
+          return (
+            <TouchableOpacity
+              key={btn.key}
+              onPress={() => { setFilter(btn.key); setSelectedPoint(null); }}
+              disabled={!!selectedPoint}
+              activeOpacity={0.75}
               style={{
-                color: filter === btn.key ? '#fff' : btn.bg,
-                fontWeight: '700',
-                fontSize: 14,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 5,
+                backgroundColor: isActive ? btn.bg : '#f3f4f6',
+                paddingHorizontal: 14,
+                paddingVertical: 9,
+                borderRadius: 50,
+                borderWidth: 2,
+                borderColor: isActive ? btn.bg : '#172554',
+                opacity: selectedPoint ? 0.5 : 1,
               }}
             >
-              {btn.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Ionicons
+                name={isActive ? btn.icon : (`${btn.icon}-outline` as any)}
+                size={16}
+                color={isActive ? '#fff' : '#374151'}
+              />
+              <Text
+                style={{
+                  color: isActive ? '#fff' : '#374151',
+                  fontWeight: '700',
+                  fontSize: 13,
+                }}
+              >
+                {btn.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
       {/* Geocoding indicator */}
@@ -399,14 +421,14 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {/* My Location Button */}
+      {/* My Location Button (above Viajes FAB) */}
       {userLocation && (
         <TouchableOpacity
           onPress={handleLocateMe}
           style={{
             position: 'absolute',
-            bottom: selectedPoint ? 310 : 30,
-            right: 16,
+            bottom: selectedPoint ? 380 : 105,
+            right: 22,
             width: 52,
             height: 52,
             borderRadius: 26,
@@ -424,6 +446,35 @@ export default function HomeScreen() {
           }}
         >
           <Ionicons name="locate" size={24} color="#172554" />
+        </TouchableOpacity>
+      )}
+
+      {/* ── Floating "Viajes" button ── */}
+      {!selectedPoint && (
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Routes')}
+          activeOpacity={0.85}
+          style={{
+            position: 'absolute',
+            bottom: 24,
+            right: 16,
+            width: 64,
+            height: 64,
+            borderRadius: 32,
+            backgroundColor: '#fff',
+            borderWidth: 2,
+            borderColor: '#172554',
+            alignItems: 'center',
+            justifyContent: 'center',
+            elevation: 8,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 6,
+            zIndex: 20,
+          }}
+        >
+          <Ionicons name="map" size={28} color="#172554" />
         </TouchableOpacity>
       )}
 
