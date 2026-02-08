@@ -67,6 +67,7 @@ export const vehiclesAPI = {
 
 // ── Passenger Profiles ──
 export const passengerProfilesAPI = {
+  getAll: () => apiClient.get('/passenger-profiles'),
   getByRoleId: (roleId: number) => apiClient.get(`/passenger-profiles/${roleId}`),
 };
 

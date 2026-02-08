@@ -18,7 +18,7 @@ export class DriversService {
     if (!url) return null;
     if (url.startsWith('http://') || url.startsWith('https://')) return url;
     if (url.startsWith('/uploads')) return `${this.backendUrl}${url}`;
-    return url;
+    return url;  // /assets/ paths are returned as-is for frontend to handle
   }
 
   async findAll() {

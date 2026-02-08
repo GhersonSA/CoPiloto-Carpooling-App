@@ -21,7 +21,7 @@ export default function TabNavigator() {
         header: () => <TabHeader />,
       }}
     >
-      {/* Order matches web mobileTabs: Pasajeros, Pagos, Inicio (center), Stats, Perfil */}
+      {/* Order mobileTab */}
       <Tab.Screen name="Passengers" component={PassengersScreen} options={{ title: 'Pasajeros' }} />
       <Tab.Screen name="Payments" component={PaymentsScreen} options={{ title: 'Pagos' }} />
       <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Inicio' }} />

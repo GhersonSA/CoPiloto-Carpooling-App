@@ -27,6 +27,7 @@ export interface DriverProfile {
   barrio?: string;
   telefono?: string;
   img_chofer?: string;
+  calificacion?: string;
 }
 
 export interface Driver {
@@ -61,6 +62,7 @@ export interface PassengerProfile {
   barrio?: string;
   telefono?: string;
   img_pasajero?: string;
+  calificacion?: string;
 }
 
 export interface Passenger {

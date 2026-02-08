@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { View, Text, ScrollView, RefreshControl, Image } from 'react-native';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../hooks/useAuth';
@@ -60,8 +61,6 @@ export default function DashboardScreen() {
     setRefreshing(false);
   }, [loadData]);
 
-  // ── Cálculos idénticos al web ──
-
   const idDelChoferActual = user?.id || 1;
 
   // Total ingresos
@@ -86,12 +85,12 @@ export default function DashboardScreen() {
     ? (sumaCalificaciones / calificacionChofer.length).toFixed(1)
     : '0';
 
-  // Pasajeros activos - tomar los 3 primeros (idéntico a web)
+  // Pasajeros activos - tomar los 3 primeros
   const pasajerosActivos = useMemo(() => {
     return passengers.slice(0, 3);
   }, [passengers]);
 
-  // Top pasajeros (por pagos completados, o los primeros si no hay pagos) — idéntico al web
+  // Top pasajeros
   const topPasajeros = useMemo(() => {
     const pagosPorPasajero: Record<number, number> = {};
     payments.forEach(p => {
@@ -136,24 +135,39 @@ export default function DashboardScreen() {
 
         {/* Top 4 Stat Cards */}
         <View className="flex-row flex-wrap gap-3 mb-4">
-          {/* 💲 Total Ingresos */}
+          {/* Total Ingresos */}
           <View className="flex-1 min-w-[45%] bg-blue-950/90 rounded-3xl p-4 justify-center" style={{ minHeight: 110 }}>
-            <Text className="text-white text-sm mb-2">💲 Total Ingresos</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+              <Ionicons name="cash" size={22} color="#fff" style={{ marginRight: 6 }} />
+              <Text className="text-white text-sm">Total Ingresos</Text>
+            </View>
             <Text className="text-yellow-500 text-3xl font-bold text-center">{totalIngresos}€</Text>
           </View>
-          {/* 👥 Total Pasajeros */}
+          {/* Total Pasajeros */}
           <View className="flex-1 min-w-[45%] bg-blue-950/90 rounded-3xl p-4 justify-center" style={{ minHeight: 110 }}>
-            <Text className="text-white text-sm mb-2">👥 Total Pasajeros</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+              <Ionicons name="people" size={22} color="#fff" style={{ marginRight: 6 }} />
+              <Text className="text-white text-sm">Total Pasajeros</Text>
+            </View>
             <Text className="text-yellow-500 text-3xl font-bold text-center">{totalPasajeros}</Text>
           </View>
-          {/* ⭐ Calificación */}
+          {/* Calificación */}
           <View className="flex-1 min-w-[45%] bg-blue-950/90 rounded-3xl p-4 justify-center" style={{ minHeight: 110 }}>
-            <Text className="text-white text-sm mb-2">⭐ Calificación</Text>
-            <Text className="text-yellow-500 text-3xl font-bold text-center">{totalCalificaciones} ⭐</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+              <Ionicons name="star" size={22} color="#fff" style={{ marginRight: 6 }} />
+              <Text className="text-white text-sm">Calificación</Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Text className="text-yellow-500 text-3xl font-bold">{totalCalificaciones}</Text>
+              <Ionicons name="star" size={22} color="#facc15" style={{ marginLeft: 6 }} />
+            </View>
           </View>
-          {/* 💸 Total Sin Pagar */}
+          {/* Total Sin Pagar */}
           <View className="flex-1 min-w-[45%] bg-blue-950/90 rounded-3xl p-4 justify-center" style={{ minHeight: 110 }}>
-            <Text className="text-white text-sm mb-2">💸 Total Sin Pagar</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+              <Ionicons name="card" size={22} color="#fff" style={{ marginRight: 6 }} />
+              <Text className="text-white text-sm">Total Sin Pagar</Text>
+            </View>
             <Text className="text-yellow-500 text-3xl font-bold text-center">{totalSinPagar}€</Text>
           </View>
         </View>

@@ -1,13 +1,17 @@
 import {
   View, Text, TouchableOpacity, Modal, Image, ScrollView,
   ActivityIndicator, Dimensions, Linking, Platform, Alert,
+  ImageSourcePropType,
 } from 'react-native';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
+import Svg, { Defs, ClipPath, Circle, Image as SvgImage } from 'react-native-svg';
+import MapView, { Marker, Callout, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import * as Location from 'expo-location';
+import polyline from '@mapbox/polyline';
 import { useAuth } from '../hooks/useAuth';
-import { routesAPI, driversAPI, passengersAPI, routePassengersAPI } from '../api/client';
+import { routesAPI, driversAPI, passengersAPI, routePassengersAPI, passengerProfilesAPI } from '../api/client';
+import { getImageUrl, getLocalPresetSource } from '../lib/imageUtils';
 
 // ─── Tipos ───
 interface MapPoint {
@@ -19,11 +23,22 @@ interface MapPoint {
     nombre?: string;
     username?: string;
     img?: string;
+    imgLocal?: ImageSourcePropType | null;
     calificacion?: string | number;
     telefono?: string;
   };
   details: any;
   userType: 'chofer' | 'pasajero';
+}
+
+interface RouteCoord {
+  latitude: number;
+  longitude: number;
+}
+
+interface RouteLeg {
+  startLocation: RouteCoord;
+  endLocation: RouteCoord;
 }
 
 type FilterType = 'todo' | 'chofer' | 'pasajero';
@@ -68,6 +83,29 @@ const openWhatsApp = (telefono?: string, nombre?: string) => {
   Linking.openURL(`https://wa.me/${cleanPhone}?text=${message}`);
 };
 
+// ─── Helpers ───
+const parseParadas = (rawParadas: unknown): any[] => {
+  if (!rawParadas) return [];
+  if (Array.isArray(rawParadas)) return rawParadas;
+  if (typeof rawParadas === 'string') {
+    try {
+      const parsed = JSON.parse(rawParadas);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  return [];
+};
+
+/** Build resolved image info for a raw image path */
+const resolveImage = (rawImg: string | null | undefined) => {
+  const localSrc = getLocalPresetSource(rawImg);
+  if (localSrc) return { img: undefined, imgLocal: localSrc };
+  const networkUrl = getImageUrl(rawImg);
+  return { img: networkUrl || undefined, imgLocal: null };
+};
+
 // ─── Component ───
 export default function HomeScreen() {
   const { user } = useAuth();
@@ -89,12 +127,16 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [geocoding, setGeocoding] = useState(false);
 
+  // Route polyline state
+  const [routeCoords, setRouteCoords] = useState<RouteCoord[]>([]);
+  const [routeLegs, setRouteLegs] = useState<RouteLeg[]>([]);
+
   // ─── Load data ───
   const loadData = useCallback(async () => {
     try {
       const [dRes, pRes, rRes, rpRes] = await Promise.all([
         driversAPI.getAll().catch(() => ({ data: [] })),
-        passengersAPI.getAll().catch(() => ({ data: [] })),
+        passengerProfilesAPI.getAll().catch(() => ({ data: [] })),
         routesAPI.getAll().catch(() => ({ data: [] })),
         routePassengersAPI.getAll().catch(() => ({ data: [] })),
       ]);
@@ -138,8 +180,10 @@ export default function HomeScreen() {
       // Chofer routes (driver routes)
       routes.forEach((route: any) => {
         const driver = drivers.find((d: any) => d.user_id === route.chofer_id);
-        const imgChofer = route.img_chofer || driver?.img_chofer || driver?.image;
+        const rawImg = route.img_chofer || driver?.img_chofer || driver?.image;
+        const { img, imgLocal } = resolveImage(rawImg);
         const nombreChofer = route.chofer_nombre || driver?.nombre || driver?.name || 'Chofer';
+        const usernameChofer = route.chofer_username || driver?.username || driver?.email?.split('@')[0] || 'usuario';
 
         if (route.origen) {
           tasks.push(
@@ -152,11 +196,13 @@ export default function HomeScreen() {
                 type: 'origen',
                 user: {
                   nombre: nombreChofer,
-                  img: imgChofer,
+                  username: usernameChofer,
+                  img,
+                  imgLocal,
                   calificacion: route.calificacion || driver?.calificacion,
                   telefono: route.telefono || driver?.telefono,
                 },
-                details: { ...route, nombre: nombreChofer, vehiculo: driver?.vehiculo, telefono: route.telefono || driver?.telefono },
+                details: { ...route, nombre: nombreChofer, username: usernameChofer, vehiculo: driver?.vehiculo, telefono: route.telefono || driver?.telefono },
                 userType: 'chofer',
               });
             })
@@ -173,11 +219,13 @@ export default function HomeScreen() {
                 type: 'destino',
                 user: {
                   nombre: nombreChofer,
-                  img: imgChofer,
+                  username: usernameChofer,
+                  img,
+                  imgLocal,
                   calificacion: route.calificacion || driver?.calificacion,
                   telefono: route.telefono || driver?.telefono,
                 },
-                details: { ...route, nombre: nombreChofer, vehiculo: driver?.vehiculo, telefono: route.telefono || driver?.telefono },
+                details: { ...route, nombre: nombreChofer, username: usernameChofer, vehiculo: driver?.vehiculo, telefono: route.telefono || driver?.telefono },
                 userType: 'chofer',
               });
             })
@@ -187,7 +235,9 @@ export default function HomeScreen() {
 
       // Passenger routes
       routePassengers.forEach((rp: any) => {
-        const passenger = passengers.find((p: any) => p.user_id === rp.pasajero_id);
+        const passenger = passengers.find((p: any) => String(p.user_id) === String(rp.pasajero_id));
+        const rawImg = passenger?.img_pasajero || passenger?.image;
+        const { img, imgLocal } = resolveImage(rawImg);
 
         if (rp.origen) {
           tasks.push(
@@ -199,8 +249,10 @@ export default function HomeScreen() {
                 lng: coords.lng,
                 type: 'origen',
                 user: {
-                  nombre: passenger?.nombre || passenger?.name,
-                  img: passenger?.img_pasajero || passenger?.image,
+                  nombre: passenger?.username || passenger?.nombre || passenger?.name,
+                  username: passenger?.username || passenger?.email?.split('@')[0],
+                  img,
+                  imgLocal,
                   calificacion: passenger?.calificacion,
                   telefono: passenger?.telefono,
                 },
@@ -220,8 +272,10 @@ export default function HomeScreen() {
                 lng: coords.lng,
                 type: 'destino',
                 user: {
-                  nombre: passenger?.nombre || passenger?.name,
-                  img: passenger?.img_pasajero || passenger?.image,
+                  nombre: passenger?.username || passenger?.nombre || passenger?.name,
+                  username: passenger?.username || passenger?.email?.split('@')[0],
+                  img,
+                  imgLocal,
                   calificacion: passenger?.calificacion,
                   telefono: passenger?.telefono,
                 },
@@ -274,7 +328,84 @@ export default function HomeScreen() {
 
   const handleCloseSheet = () => {
     setSelectedPoint(null);
+    setRouteCoords([]);
+    setRouteLegs([]);
   };
+
+  // ─── Fetch Directions when a point is selected ───
+  useEffect(() => {
+    if (!selectedPoint) {
+      setRouteCoords([]);
+      setRouteLegs([]);
+      return;
+    }
+
+    const { origen, destino, paradas } = selectedPoint.details;
+    if (!origen || !destino) return;
+
+    let cancelled = false;
+
+    const fetchDirections = async () => {
+      try {
+        // Build waypoints from paradas (only for chofer routes)
+        let waypointsParam = '';
+        if (selectedPoint.userType === 'chofer' && paradas) {
+          const paradasArr = parseParadas(paradas);
+          const wayAddresses = paradasArr
+            .map((p: any) => p?.direccion)
+            .filter(Boolean);
+          if (wayAddresses.length) {
+            waypointsParam = `&waypoints=${wayAddresses.map((a: string) => encodeURIComponent(a)).join('|')}`;
+          }
+        }
+
+        const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${encodeURIComponent(origen)}&destination=${encodeURIComponent(destino)}${waypointsParam}&mode=driving&key=${GOOGLE_MAPS_API_KEY}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (cancelled || data.status !== 'OK' || !data.routes?.[0]) return;
+
+        const route = data.routes[0];
+
+        // Decode overview polyline
+        const decodedPoints = polyline.decode(route.overview_polyline.points);
+        const coords: RouteCoord[] = decodedPoints.map(([lat, lng]: [number, number]) => ({
+          latitude: lat,
+          longitude: lng,
+        }));
+
+        // Extract leg start/end for markers (I, paradas, F)
+        const legs: RouteLeg[] = route.legs.map((leg: any) => ({
+          startLocation: {
+            latitude: leg.start_location.lat,
+            longitude: leg.start_location.lng,
+          },
+          endLocation: {
+            latitude: leg.end_location.lat,
+            longitude: leg.end_location.lng,
+          },
+        }));
+
+        if (!cancelled) {
+          setRouteCoords(coords);
+          setRouteLegs(legs);
+
+          // Fit map to show the entire route
+          if (mapRef.current && coords.length > 0) {
+            mapRef.current.fitToCoordinates(coords, {
+              edgePadding: { top: 80, right: 50, bottom: 380, left: 50 },
+              animated: true,
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Directions API error:', err);
+      }
+    };
+
+    fetchDirections();
+    return () => { cancelled = true; };
+  }, [selectedPoint]);
 
   const handleWhatsApp = () => {
     if (!selectedPoint) return;
@@ -310,42 +441,114 @@ export default function HomeScreen() {
         toolbarEnabled={false}
       >
         {/* Markers for drivers and passengers */}
-        {filteredPoints.map((point) => (
-          <Marker
-            key={point.id}
-            coordinate={{ latitude: point.lat, longitude: point.lng }}
-            onPress={() => handleMarkerPress(point)}
-          >
-            {/* Custom marker */}
-            <View
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 25,
-                borderWidth: 3,
-                borderColor: point.userType === 'chofer' ? '#172554' : '#16a34a',
-                backgroundColor: '#fff',
-                overflow: 'hidden',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+        {filteredPoints.map((point) => {
+          const hasImage = !!(point.user.imgLocal || point.user.img);
+          const borderColor = point.userType === 'chofer' ? '#172554' : '#16a34a';
+
+          return (
+            <Marker
+              key={point.id}
+              coordinate={{ latitude: point.lat, longitude: point.lng }}
+              onPress={() => handleMarkerPress(point)}
             >
-              {point.user.img ? (
-                <Image
-                  source={{ uri: point.user.img }}
-                  style={{ width: 44, height: 44, borderRadius: 22 }}
-                  resizeMode="cover"
-                />
+              {hasImage ? (
+                <View
+                  style={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: 26,
+                    borderWidth: 3,
+                    borderColor,
+                    backgroundColor: '#fff',
+                    overflow: 'hidden',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Image
+                    source={point.user.imgLocal || { uri: point.user.img! }}
+                    style={{
+                      width: 52,
+                      height: 52,
+                      borderRadius: 26,
+                    }}
+                    resizeMode="cover"
+                  />
+                </View>
               ) : (
-                <Ionicons
-                  name="person"
-                  size={24}
-                  color={point.userType === 'chofer' ? '#172554' : '#16a34a'}
-                />
+                <View
+                  style={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: 26,
+                    borderWidth: 3,
+                    borderColor,
+                    backgroundColor: '#fff',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Ionicons name="person" size={28} color={borderColor} />
+                </View>
               )}
+            </Marker>
+          );
+        })}
+
+        {/* ── Route polyline ── */}
+        {routeCoords.length > 0 && selectedPoint && (
+          <Polyline
+            coordinates={routeCoords}
+            strokeColor={selectedPoint.userType === 'chofer' ? '#172554' : '#16a34a'}
+            strokeWidth={5}
+            lineDashPattern={undefined}
+          />
+        )}
+
+        {/* ── Route start marker (I) ── */}
+        {routeLegs.length > 0 && (
+          <Marker coordinate={routeLegs[0].startLocation} anchor={{ x: 0.5, y: 0.5 }}>
+            <View style={{
+              width: 26, height: 26, borderRadius: 13,
+              backgroundColor: '#172554', borderWidth: 2, borderColor: '#0f172a',
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Text style={{ color: '#fff', fontSize: 13, fontWeight: 'bold' }}>I</Text>
             </View>
           </Marker>
-        ))}
+        )}
+
+        {/* ── Parada markers (1P, 2P, ...) ── */}
+        {routeLegs.length > 1 && selectedPoint?.userType === 'chofer' &&
+          routeLegs.slice(1).map((leg, index) => (
+            <Marker
+              key={`parada-${index}`}
+              coordinate={leg.startLocation}
+              anchor={{ x: 0.5, y: 0.5 }}
+            >
+              <View style={{
+                width: 26, height: 26, borderRadius: 13,
+                backgroundColor: '#16a34a', borderWidth: 2, borderColor: '#16a34a',
+                alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Text style={{ color: '#fff', fontSize: 10, fontWeight: 'bold' }}>{index + 1}P</Text>
+              </View>
+            </Marker>
+          ))
+        }
+
+        {/* ── Route end marker (F) ── */}
+        {routeLegs.length > 0 && (
+          <Marker coordinate={routeLegs[routeLegs.length - 1].endLocation} anchor={{ x: 0.5, y: 0.5 }}>
+            <View style={{
+              width: 26, height: 26, borderRadius: 13,
+              backgroundColor: '#172554', borderWidth: 2, borderColor: '#0f172a',
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Text style={{ color: '#fff', fontSize: 13, fontWeight: 'bold' }}>F</Text>
+            </View>
+          </Marker>
+        )}
       </MapView>
 
       {/* ── Filter Controls ── */}
@@ -502,31 +705,36 @@ export default function HomeScreen() {
               elevation: 10,
             }}
           >
-            {/* Header: Avatar + Name + Rating + Close */}
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
-              <View
-                style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: 36,
-                  borderWidth: 3,
-                  borderColor: selectedPoint.userType === 'chofer' ? '#172554' : '#16a34a',
-                  overflow: 'hidden',
-                  backgroundColor: '#e5e7eb',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {selectedPoint.user.img ? (
-                  <Image
-                    source={{ uri: selectedPoint.user.img }}
-                    style={{ width: 66, height: 66, borderRadius: 33 }}
-                    resizeMode="cover"
-                  />
-                ) : (
+              {(selectedPoint.user.imgLocal || selectedPoint.user.img) ? (
+                <Image
+                  source={selectedPoint.user.imgLocal || { uri: selectedPoint.user.img! }}
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: 36,
+                    borderWidth: 3,
+                    borderColor: selectedPoint.userType === 'chofer' ? '#172554' : '#16a34a',
+                    backgroundColor: '#e5e7eb',
+                  }}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: 36,
+                    borderWidth: 3,
+                    borderColor: selectedPoint.userType === 'chofer' ? '#172554' : '#16a34a',
+                    backgroundColor: '#e5e7eb',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
                   <Ionicons name="person" size={36} color="#6b7280" />
-                )}
-              </View>
+                </View>
+              )}
 
               <View style={{ flex: 1, marginLeft: 12 }}>
                 <Text

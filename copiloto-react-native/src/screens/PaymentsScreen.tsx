@@ -84,40 +84,69 @@ export default function PaymentsScreen() {
         {/* Title */}
         <Text className="text-4xl font-medium mb-4">Pagos</Text>
 
-        {/* Filter tabs */}
-        <View className="flex-row justify-between items-center mb-4">
-          <View className="flex-row gap-2">
-            {['Todos', 'Pagado', 'Pendiente'].map(status => (
-              <TouchableOpacity
-                key={status}
-                onPress={() => setFilterStatus(status)}
-                className={`px-4 py-2 rounded-lg border-b-2 ${
-                  filterStatus === status
-                    ? 'bg-white border-blue-950'
-                    : 'border-transparent'
-                }`}
-              >
-                <Text className={`text-sm font-semibold ${
-                  filterStatus === status ? 'text-blue-950' : 'text-gray-500'
-                }`}>
-                  {status === 'Pagado' ? 'Pagados' : status === 'Pendiente' ? 'Pendientes' : status}
-                </Text>
-              </TouchableOpacity>
-            ))}
+        {/* Filtros arriba y centrados, orden abajo y centrado */}
+        <View style={{ marginBottom: 16 }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 8 }}>
+            {['Todos', 'Pagado', 'Pendiente'].map((status, idx) => {
+              const isActive = filterStatus === status;
+              return (
+                <TouchableOpacity
+                  key={status}
+                  onPress={() => setFilterStatus(status)}
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 6,
+                    borderRadius: 0,
+                    borderBottomWidth: isActive ? 3 : 0,
+                    borderBottomColor: isActive ? '#172554' : 'transparent',
+                    backgroundColor: isActive ? '#fff' : '#f3f4f6',
+                    marginRight: idx < 2 ? 4 : 0,
+                    minWidth: 70,
+                  }}
+                  activeOpacity={0.85}
+                >
+                  <Text style={{
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    color: isActive ? '#172554' : '#6b7280',
+                    textAlign: 'center',
+                  }}>
+                    {status === 'Pagado' ? 'Pagados' : status === 'Pendiente' ? 'Pendientes' : status}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
-          <View className="flex-row bg-gray-200 rounded-lg overflow-hidden">
-            <TouchableOpacity
-              onPress={() => setOrder('recientes')}
-              className={`px-3 py-1.5 ${order === 'recientes' ? 'bg-white' : ''}`}
-            >
-              <Text className={`text-xs ${order === 'recientes' ? 'text-blue-950 font-bold' : 'text-gray-500'}`}>Recientes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setOrder('antiguos')}
-              className={`px-3 py-1.5 ${order === 'antiguos' ? 'bg-white' : ''}`}
-            >
-              <Text className={`text-xs ${order === 'antiguos' ? 'text-blue-950 font-bold' : 'text-gray-500'}`}>Antiguos</Text>
-            </TouchableOpacity>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', borderRadius: 0 }}>
+            {['recientes', 'antiguos'].map((ord, idx) => {
+              const isActive = order === ord;
+              return (
+                <TouchableOpacity
+                  key={ord}
+                  onPress={() => setOrder(ord as 'recientes' | 'antiguos')}
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 6,
+                    borderRadius: 0,
+                    borderBottomWidth: isActive ? 3 : 0,
+                    borderBottomColor: isActive ? '#172554' : 'transparent',
+                    backgroundColor: isActive ? '#fff' : 'transparent',
+                    minWidth: 70,
+                    marginRight: idx < 1 ? 4 : 0,
+                  }}
+                  activeOpacity={0.85}
+                >
+                  <Text style={{
+                    fontSize: 13,
+                    fontWeight: isActive ? 'bold' : 'normal',
+                    color: isActive ? '#172554' : '#6b7280',
+                    textAlign: 'center',
+                  }}>
+                    {ord === 'recientes' ? 'Recientes' : 'Antiguos'}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
 
