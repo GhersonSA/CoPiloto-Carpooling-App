@@ -16,17 +16,17 @@ export function Button({
   disabled = false,
 }: ButtonProps) {
   const variants = {
-    primary: 'bg-blue-500',
+    primary: 'bg-blue-950',
     secondary: 'bg-gray-500',
     danger: 'bg-red-500',
-    outline: 'bg-transparent border-2 border-blue-500',
+    outline: 'bg-transparent border-2 border-blue-950',
   };
 
   const textVariants = {
     primary: 'text-white',
     secondary: 'text-white',
     danger: 'text-white',
-    outline: 'text-blue-500',
+    outline: 'text-blue-950',
   };
 
   return (
@@ -36,7 +36,7 @@ export function Button({
       className={`w-full p-4 rounded-xl flex-row justify-center items-center ${variants[variant]} ${disabled ? 'opacity-50' : ''}`}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'outline' ? '#3b82f6' : 'white'} />
+        <ActivityIndicator color={variant === 'outline' ? '#172554' : 'white'} />
       ) : (
         <Text className={`text-lg font-semibold ${textVariants[variant]}`}>
           {title}

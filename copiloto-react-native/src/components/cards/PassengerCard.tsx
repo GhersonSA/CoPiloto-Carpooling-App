@@ -13,7 +13,7 @@ export function PassengerCard({ passenger, onPress }: PassengerCardProps) {
     return (
         <Card onPress={onPress} className="mb-3">
             <View className="flex-row items-center">
-                <Avatar uri={passenger.img || passenger.img_pasajero} size="md" />
+                <Avatar uri={passenger.img_pasajero} size="md" />
                 <View className="flex-1 ml-4">
                     <Text className="text-lg font-semibold text-gray-800">
                         {passenger.nombre}

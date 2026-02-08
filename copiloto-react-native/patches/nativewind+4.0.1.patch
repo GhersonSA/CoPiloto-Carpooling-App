@@ -1,0 +1,14 @@
+diff --git a/node_modules/nativewind/dist/metro/transformer.js b/node_modules/nativewind/dist/metro/transformer.js
+index fd479c2..7e1cbf8 100644
+--- a/node_modules/nativewind/dist/metro/transformer.js
++++ b/node_modules/nativewind/dist/metro/transformer.js
+@@ -16,7 +16,8 @@ new globalThis.WebSocket(\`\${url}:${config.nativewind.fastRefreshPort}\`).addEv
+ StyleSheet.register(JSON.parse('${config.nativewind.initialData}'));`, "utf8"), options);
+         }
+         else {
+-            return metro_transform_worker_1.default.transform(config, projectRoot, filename, Buffer.from(`import '${config.nativewind.output}'`, "utf8"), options);
++            const outputPath = config.nativewind.output.replace(/\\/g, '/');
++            return metro_transform_worker_1.default.transform(config, projectRoot, filename, Buffer.from(`import '${outputPath}'`, "utf8"), options);
+         }
+     }
+     return (0, transformer_1.transform)(config, projectRoot, filename, data, options);

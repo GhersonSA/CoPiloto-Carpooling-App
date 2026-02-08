@@ -28,13 +28,9 @@ export function RouteCard({ route, onPress }: RouteCardProps) {
                     <Ionicons name="time" size={16} color="#6b7280" />
                     <Text className="text-gray-500 ml-1">{route.hora_salida}</Text>
                 </View>
-                <View className="flex-row items-center flex-1">
+                <View className="flex-row items-center">
                     <Ionicons name="calendar" size={16} color="#6b7280" />
                     <Text className="text-gray-500 ml-1">{route.dias}</Text>
-                </View>
-                <View className="flex-row items-center">
-                    <Ionicons name="people" size={16} color="#6b7280" />
-                    <Text className="text-gray-500 ml-1">{route.plazas_disponibles} plazas</Text>
                 </View>
             </View>
         </Card>

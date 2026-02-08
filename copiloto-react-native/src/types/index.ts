@@ -1,65 +1,50 @@
+// ── User ──
 export interface User {
   id: number;
   nombre: string;
+  username: string;
   email: string;
-  image?: string;
-  password?: string;
-  createdAt?: string;
+  provider?: string;
+  role?: string;
 }
+
+// ── Roles ──
+export type RolTipo = 'chofer' | 'pasajero';
 
 export interface Role {
   id: number;
-  tipo: 'chofer' | 'pasajero' | 'admin';
-  activo: boolean;
   user_id: number;
+  tipo: RolTipo;
+  activo: boolean;
+  creado_en?: string;
+}
+
+// ── Driver ──
+export interface DriverProfile {
+  id: number;
+  role_id?: number;
+  direccion?: string;
+  barrio?: string;
+  telefono?: string;
+  img_chofer?: string;
 }
 
 export interface Driver {
   id: number;
-  user_id: number;
-  nombre: string;
-  img_chofer?: string;
+  nombre?: string;
+  username?: string;
   direccion?: string;
   barrio?: string;
-  telefono?: string;
-  email?: string;
-}
-
-export interface DriverProfile {
-  id: number;
-  user_id: number;
-  nombre: string;
   img_chofer?: string;
-  direccion?: string;
-  barrio?: string;
   telefono?: string;
   vehiculo?: Vehicle;
+  routes?: { origen: string; destino: string }[];
 }
 
-export interface Passenger {
-  id: number;
-  user_id?: number;
-  nombre: string;
-  img?: string;
-  img_pasajero?: string;
-  barrio?: string;
-  telefono?: string;
-  email?: string;
-  direccion?: string;
-}
-
-export interface PassengerProfile {
-  id: number;
-  user_id: number;
-  nombre: string;
-  img_pasajero?: string;
-  barrio?: string;
-  telefono?: string;
-}
-
+// ── Vehicle ──
 export interface Vehicle {
   id: number;
-  driver_id?: number;
+  driver_profile_id?: number;
   marca: string;
   modelo: string;
   color: string;
@@ -68,31 +53,61 @@ export interface Vehicle {
   img_vehiculo?: string;
 }
 
+// ── Passenger ──
+export interface PassengerProfile {
+  id: number;
+  role_id?: number;
+  nacionalidad?: string;
+  barrio?: string;
+  telefono?: string;
+  img_pasajero?: string;
+}
+
+export interface Passenger {
+  id: number;
+  nombre?: string;
+  username?: string;
+  img_pasajero?: string;
+  nacionalidad?: string;
+  barrio?: string;
+  telefono?: string;
+}
+
+// ── Route ──
 export interface Route {
   id: number;
   chofer_id: number;
   origen: string;
   destino: string;
-  hora_salida: string;
-  hora_llegada: string;
-  dias: string;
-  plazas_disponibles: number;
-  precio?: number;
-  img_chofer?: string;
+  dias?: string;
+  hora_salida?: string;
+  hora_llegada?: string;
+  hora_regreso?: string;
+  hora_llegada_regreso?: string;
   chofer_nombre?: string;
-  origen_lat?: number;
-  origen_lng?: number;
-  destino_lat?: number;
-  destino_lng?: number;
+  img_chofer?: string;
+  paradas?: Parada[];
 }
 
+export interface Parada {
+  pasajero_id?: string | number;
+  direccion: string;
+}
+
+// ── Route Passengers ──
 export interface RoutePassenger {
   id: number;
-  route_id: number;
-  passenger_id: number;
-  estado: 'pendiente' | 'aceptado' | 'rechazado';
+  pasajero_id: number;
+  origen?: string;
+  destino?: string;
+  dias?: string;
+  hora_salida?: string;
+  hora_llegada?: string;
+  hora_regreso?: string;
+  hora_llegada_regreso?: string;
 }
 
+// ── Payment ──
 export interface Payment {
   id: number;
   pasajero_id: number;
@@ -104,6 +119,7 @@ export interface Payment {
   metodo_pago?: string;
 }
 
+// ── Rating ──
 export interface Rating {
   id: number;
   evaluador_id: number;
@@ -113,29 +129,16 @@ export interface Rating {
   fecha: string;
 }
 
-export interface Trip {
-  id: number;
-  ruta_id: number;
-  fecha: string;
-  estado: 'programado' | 'en_curso' | 'completado' | 'cancelado';
-  pasajeros?: Passenger[];
-}
-
-// Navigation types
+// ── Navigation ──
 export type RootStackParamList = {
   Login: undefined;
-  Register: undefined;
-  Main: undefined;
+  MainTabs: undefined;
   RouteDetails: { routeId: number };
-  PassengerDetails: { passengerId: number };
-  EditProfile: undefined;
-  CreateRoute: undefined;
-  CreatePassenger: undefined;
 };
 
 export type MainTabParamList = {
   Home: undefined;
-  Trips: undefined;
+  Dashboard: undefined;
   Passengers: undefined;
   Payments: undefined;
   Profile: undefined;

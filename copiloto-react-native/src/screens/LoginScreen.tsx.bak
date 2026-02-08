@@ -1,0 +1,117 @@
+import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
+import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useAuth } from '../hooks/useAuth';
+import { Input } from '../components/ui/Input';
+import { Button } from '../components/ui/Button';
+import { RootStackParamList } from '../types';
+
+type Nav = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+
+export default function LoginScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation<Nav>();
+  const { login } = useAuth();
+
+  const handleLogin = async () => {
+    if (!email.trim() || !password.trim()) {
+      setError('Completa todos los campos');
+      return;
+    }
+    setError('');
+    setLoading(true);
+    const result = await login(email.trim(), password);
+    setLoading(false);
+    if (!result.success) {
+      setError(result.error || 'Credenciales incorrectas');
+    }
+    // Si es exitoso, el AppNavigator redirige automáticamente
+  };
+
+  const handleGuest = async () => {
+    setError('');
+    setLoading(true);
+    const result = await login('guest@demo.com', 'guest');
+    setLoading(false);
+    if (!result.success) {
+      setError(result.error || 'Error al entrar como invitado');
+    }
+  };
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      className="flex-1"
+    >
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
+        className="bg-blue-950"
+      >
+        <View className="flex-1 justify-center items-center px-8 py-12">
+          {/* Logo */}
+          <View className="items-center mb-8">
+            <Text className="text-white text-6xl font-bold">🚗</Text>
+            <Text className="text-white text-5xl font-bold mt-2">CoPiloto</Text>
+            <Text className="text-blue-300 text-lg mt-2 italic">Tu compañero de ruta</Text>
+          </View>
+
+          {/* Form */}
+          <View className="w-full max-w-sm">
+            {error ? (
+              <View className="bg-red-500/20 border border-red-400 rounded-xl p-3 mb-4">
+                <Text className="text-red-300 text-center">{error}</Text>
+              </View>
+            ) : null}
+
+            <Input
+              label=""
+              placeholder="Correo electrónico"
+              placeholderTextColor="#94a3b8"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+            />
+
+            <Input
+              label=""
+              placeholder="Contraseña"
+              placeholderTextColor="#94a3b8"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+
+            <View className="mt-2">
+              <Button
+                title="Iniciar Sesión"
+                onPress={handleLogin}
+                loading={loading}
+                variant="primary"
+              />
+            </View>
+
+            <TouchableOpacity onPress={handleGuest} className="mt-4 py-3">
+              <Text className="text-blue-300 text-center text-base underline">
+                Entrar como invitado
+              </Text>
+            </TouchableOpacity>
+
+            <View className="flex-row justify-center mt-6">
+              <Text className="text-gray-400">¿No tienes cuenta? </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                <Text className="text-blue-400 font-semibold">Regístrate</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+}
