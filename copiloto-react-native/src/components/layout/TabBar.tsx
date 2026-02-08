@@ -182,7 +182,9 @@ const styles = StyleSheet.create({
   },
   activeIndicator: {
     position: 'absolute',
-    top: 0,
+    top: -6,
+    left: '50%',
+    transform: [{ translateX: -24 }],
     width: 48,
     height: 3,
     backgroundColor: '#172554',

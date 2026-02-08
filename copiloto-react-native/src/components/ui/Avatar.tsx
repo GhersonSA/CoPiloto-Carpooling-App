@@ -1,4 +1,4 @@
-import { View, Image } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface AvatarProps {
@@ -8,25 +8,41 @@ interface AvatarProps {
 
 export function Avatar({ uri, size = 'md' }: AvatarProps) {
   const sizes = {
-    sm: { container: 'w-10 h-10', icon: 20 },
-    md: { container: 'w-16 h-16', icon: 32 },
-    lg: { container: 'w-24 h-24', icon: 48 },
-    xl: { container: 'w-32 h-32', icon: 64 },
+    sm: { size: 40, icon: 20 },
+    md: { size: 64, icon: 32 },
+    lg: { size: 96, icon: 48 },
+    xl: { size: 128, icon: 64 },
   };
 
-  const isValidUri = uri && (uri.startsWith('http://') || uri.startsWith('https://') || uri.startsWith('/'));
+  const containerSize = sizes[size].size;
+  const iconSize = sizes[size].icon;
+
+  const isValidUri = uri && uri.trim() !== '' && (uri.startsWith('http://') || uri.startsWith('https://'));
 
   return (
-    <View className={`${sizes[size].container} rounded-full bg-gray-200 items-center justify-center overflow-hidden`}>
+    <View style={[s.container, { width: containerSize, height: containerSize, borderRadius: containerSize / 2 }]}>
       {isValidUri ? (
         <Image 
           source={{ uri }} 
-          className="w-full h-full"
+          style={s.image}
           resizeMode="cover"
         />
       ) : (
-        <Ionicons name="person" size={sizes[size].icon} color="#6b7280" />
+        <Ionicons name="person" size={iconSize} color="#6b7280" />
       )}
     </View>
   );
 }
+
+const s = StyleSheet.create({
+  container: {
+    backgroundColor: '#e5e7eb',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+  },
+});

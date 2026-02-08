@@ -3,6 +3,9 @@ import 'dotenv/config';
 const config = {
   expo: {
     ...require('./app.json').expo,
+    plugins: [
+      ...(require('./app.json').expo.plugins || []),
+    ],
     android: {
       ...require('./app.json').expo.android,
       config: {

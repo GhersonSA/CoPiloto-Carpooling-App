@@ -97,12 +97,17 @@ export const driversAPI = {
 export const passengersAPI = {
   getAll: () => apiClient.get('/passengers'),
   getById: (id: number) => apiClient.get(`/passengers/${id}`),
+  create: (data: any) => apiClient.post('/passengers', data),
+  update: (id: number, data: any) => apiClient.put(`/passengers/${id}`, data),
+  delete: (id: number) => apiClient.delete(`/passengers/${id}`),
 };
 
 // ── Payments ──
 export const paymentsAPI = {
   getAll: () => apiClient.get('/payments'),
   create: (data: any) => apiClient.post('/payments', data),
+  update: (id: number, data: any) => apiClient.put(`/payments/${id}`, data),
+  delete: (id: number) => apiClient.delete(`/payments/${id}`),
 };
 
 // ── Ratings ──
