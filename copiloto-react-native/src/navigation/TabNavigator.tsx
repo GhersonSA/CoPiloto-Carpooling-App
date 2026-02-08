@@ -1,10 +1,12 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import HomeScreen from '../screens/HomeScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import PassengersScreen from '../screens/PassengersScreen';
 import PaymentsScreen from '../screens/PaymentsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import Header from '../components/layout/Header';
 import { MainTabParamList } from '../types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -13,13 +15,11 @@ export default function TabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerStyle: { backgroundColor: '#172554' },
-        headerTintColor: '#fff',
-        headerTitleStyle: { fontWeight: 'bold' },
-        tabBarActiveTintColor: '#eab308',  // yellow-500 — matches web active sidebar
+        header: () => <TabHeader />,
+        tabBarActiveTintColor: '#eab308',
         tabBarInactiveTintColor: '#9ca3af',
         tabBarStyle: {
-          backgroundColor: '#172554',       // blue-950 — matches web sidebar bg
+          backgroundColor: '#172554',
           borderTopWidth: 0,
           paddingTop: 5,
         },
@@ -50,31 +50,22 @@ export default function TabNavigator() {
         },
       })}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ title: 'Inicio', headerTitle: '🚗 CoPiloto' }}
-      />
-      <Tab.Screen
-        name="Dashboard"
-        component={DashboardScreen}
-        options={{ title: 'Dashboard', headerTitle: 'Dashboard' }}
-      />
-      <Tab.Screen
-        name="Passengers"
-        component={PassengersScreen}
-        options={{ title: 'Pasajeros', headerTitle: 'Pasajeros' }}
-      />
-      <Tab.Screen
-        name="Payments"
-        component={PaymentsScreen}
-        options={{ title: 'Pagos', headerTitle: 'Pagos' }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ title: 'Perfil', headerTitle: 'Mi Perfil' }}
-      />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ title: 'Inicio' }} />
+      <Tab.Screen name="Dashboard" component={DashboardScreen} options={{ title: 'Dashboard' }} />
+      <Tab.Screen name="Passengers" component={PassengersScreen} options={{ title: 'Pasajeros' }} />
+      <Tab.Screen name="Payments" component={PaymentsScreen} options={{ title: 'Pagos' }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: 'Perfil' }} />
     </Tab.Navigator>
+  );
+}
+
+/** Header wrapper que conecta navegación */
+function TabHeader() {
+  const navigation = useNavigation<any>();
+  return (
+    <Header
+      onNavigate={(screen) => navigation.navigate(screen)}
+      onProfilePress={() => navigation.navigate('Profile')}
+    />
   );
 }
