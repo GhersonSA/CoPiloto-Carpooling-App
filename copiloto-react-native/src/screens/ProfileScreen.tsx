@@ -11,6 +11,7 @@ import {
 import { useState, useEffect, useCallback } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
+import { useNavigation } from '@react-navigation/native';
 import { useRoles } from '../hooks/useRoles';
 import { useToast } from '../hooks/useToast';
 import { Avatar } from '../components/ui/Avatar';
@@ -33,12 +34,12 @@ import RoutePasajeroModal from '../components/Profile/RoutePasajeroModal';
 
 export default function ProfileScreen() {
   const { user, logout } = useAuth();
+  const navigation = useNavigation<any>();
   const { roles, isChofer, isPasajero, fetchRoles, deleteRole } = useRoles();
   const toast = useToast();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Profile data
   const [perfilChofer, setPerfilChofer] = useState<any>(null);
   const [vehiculo, setVehiculo] = useState<any>(null);
   const [perfilPasajero, setPerfilPasajero] = useState<any>(null);
@@ -47,16 +48,13 @@ export default function ProfileScreen() {
   const [rutaChoferOriginal, setRutaChoferOriginal] = useState<any>(null);
   const [rutaPasajeroOriginal, setRutaPasajeroOriginal] = useState<any>(null);
 
-  // Edit role modal
   const [editRoleModal, setEditRoleModal] = useState(false);
   const [formRole, setFormRole] = useState<any>(null);
 
-  // Route chofer modal
   const [showRutasChoferModal, setShowRutasChoferModal] = useState(false);
   const [rutaChofer, setRutaChofer] = useState<any>(null);
   const [paradasSeleccionadas, setParadasSeleccionadas] = useState<{ pasajero_id: string; direccion: string }[]>([]);
 
-  // Route pasajero modal
   const [showRutasPasajeroModal, setShowRutasPasajeroModal] = useState(false);
   const [rutaPasajero, setRutaPasajero] = useState<any>(null);
 
@@ -367,6 +365,24 @@ export default function ProfileScreen() {
             <View style={st.userHeader}>
               <Avatar size="xl" />
               <Text style={st.userName}>{user ? user.nombre || user.username : 'Cargando...'}</Text>
+              {user?.email === 'admin@demo.com' && (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Admin')}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 6,
+                    backgroundColor: '#dc2626',
+                    paddingHorizontal: 16,
+                    paddingVertical: 8,
+                    borderRadius: 10,
+                    marginTop: 8,
+                  }}
+                >
+                  <Ionicons name="shield-checkmark" size={18} color="#fff" />
+                  <Text style={{ color: '#fff', fontWeight: '700', fontSize: 14 }}>Admin</Text>
+                </TouchableOpacity>
+              )}
               <Text style={st.userRole}>Rol actual: {rolActual}</Text>
               <Text style={st.userRating}>Calificación: Próximamente...</Text>
             </View>

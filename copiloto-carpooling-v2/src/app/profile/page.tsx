@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 import { useRoles } from "@/hooks/useRoles";
 import { useToast } from "@/components/Toast";
+import Link from "next/link";
 import type { Role, PerfilChofer, PerfilPasajero, Vehiculo, RutaChofer, RutaPasajero, Parada } from "@/types/profile";
 import RoleSelector from "@/components/Profile/RoleSelector";
 import DriverProfile from "@/components/Profile/DriverProfile";
@@ -395,6 +396,16 @@ const Profile = () => {
                     <h2 className="text-5xl sm:text-7xl lg:text-8xl font-bold text-center">
                         {user ? (user.nombre || user.username) : "Cargando..."}
                     </h2>
+                    {user?.email === 'admin@demo.com' && (
+                        <div className="flex justify-center mt-3 md:hidden">
+                            <Link
+                                href="/admin"
+                                className="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition"
+                            >
+                                <i className="fa-solid fa-shield-halved"></i> Admin
+                            </Link>
+                        </div>
+                    )}
                     <h3 className="text-3xl sm:text-5xl lg:text-6xl mt-5 text-gray-500 text-center">
                         Rol actual: {rolActual}
                     </h3>

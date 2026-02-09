@@ -74,6 +74,7 @@ export const passengerProfilesAPI = {
 // ── Routes ──
 export const routesAPI = {
   getAll: (params?: Record<string, any>) => apiClient.get('/routes', { params }),
+  getMisRutas: () => apiClient.get('/routes/mis-rutas'),
   getById: (id: number) => apiClient.get(`/routes/${id}`),
   create: (data: any) => apiClient.post('/routes', data),
   update: (id: number, data: any) => apiClient.put(`/routes/${id}`, data),
@@ -115,4 +116,10 @@ export const paymentsAPI = {
 export const ratingsAPI = {
   getAll: () => apiClient.get('/ratings'),
   create: (data: any) => apiClient.post('/ratings', data),
+};
+
+// ── Users (admin) ──
+export const usersAPI = {
+  getAll: () => apiClient.get('/users'),
+  delete: (id: number) => apiClient.delete(`/users/${id}`),
 };

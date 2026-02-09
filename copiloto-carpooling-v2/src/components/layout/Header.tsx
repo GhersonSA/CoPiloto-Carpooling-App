@@ -70,6 +70,11 @@ const Header = () => {
                         <Link href="/settings" onClick={() => setIsMenuOpen(false)} className="mobile-menu-button">
                             <i className="fa-solid fa-gear"></i> Ajustes
                         </Link>
+                        {user?.email === 'admin@demo.com' && (
+                            <Link href="/admin" onClick={() => setIsMenuOpen(false)} className="mobile-menu-button text-red-500">
+                                <i className="fa-solid fa-shield-halved"></i> Admin
+                            </Link>
+                        )}
                         <button onClick={handleLogout} className="mobile-menu-button">
                             <i className="fa-solid fa-right-from-bracket"></i> Cerrar sesión
                         </button>
