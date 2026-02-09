@@ -180,7 +180,7 @@ const LoginHero = () => {
                             Modo Invitado
                         </button>
                         <a 
-                            href="https://expo.dev/artifacts/eas/wyvtJbgN3rnBaPAfpGJSdy.apk" 
+                            href="https://expo.dev/artifacts/eas/9kZc3qGfm9yxH3JqbmGGeZ.apk" 
                             download="CoPiloto-Carpooling-App.apk"
                             className="md:hidden bg-green-600 text-white w-md px-10 py-4 rounded-2xl shadow-md hover:bg-green-700 transition duration-300 text-2xl font-semibold flex items-center justify-center gap-3"
                         >
