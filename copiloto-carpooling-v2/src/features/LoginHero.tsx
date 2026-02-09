@@ -144,6 +144,14 @@ const LoginHero = () => {
                         <button onClick={openModal} className="hidden md:flex text-gray-500 hover:text-gray-800 hover:underline cursor-pointer text-xl">
                             Iniciar Sesión
                         </button>
+                        <a 
+                            href="https://expo.dev/artifacts/eas/wyvtJbgN3rnBaPAfpGJSdy.apk" 
+                            download
+                            className="hidden md:flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition duration-300 text-lg font-semibold"
+                        >
+                            <i className="fa-brands fa-android text-xl"></i>
+                            Descargar App
+                        </a>
                         <a href="https://www.linkedin.com/in/gherson-sa/" target="_blank" aria-label="LinkedIn" className="social-button">
                             <i className="fa-brands fa-linkedin-in"></i>
                         </a>
@@ -171,6 +179,14 @@ const LoginHero = () => {
                         <button onClick={handleGuest} className="bg-blue-950 text-white w-md px-10 py-4 rounded-2xl shadow-md hover:bg-blue-600 transition duration-300 text-2xl italic cursor-pointer">
                             Modo Invitado
                         </button>
+                        <a 
+                            href="https://expo.dev/artifacts/eas/wyvtJbgN3rnBaPAfpGJSdy.apk" 
+                            download="CoPiloto-Carpooling-App.apk"
+                            className="md:hidden bg-green-600 text-white w-md px-10 py-4 rounded-2xl shadow-md hover:bg-green-700 transition duration-300 text-2xl font-semibold flex items-center justify-center gap-3"
+                        >
+                            <i className="fa-brands fa-android text-2xl"></i>
+                            Descargar App
+                        </a>
                     </div>
                 </div>
                 <dialog ref={dialogRef} className="rounded-lg p-6 shadow-xl max-w-3xl h-4/4 w-full backdrop:bg-black/50 m-auto" closedby="any">
