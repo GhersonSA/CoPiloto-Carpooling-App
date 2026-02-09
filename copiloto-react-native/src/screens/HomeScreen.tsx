@@ -3,7 +3,7 @@ import {
   ActivityIndicator, Dimensions, Linking, Platform, Alert,
   ImageSourcePropType,
 } from 'react-native';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import Svg, { Defs, ClipPath, Circle, Image as SvgImage } from 'react-native-svg';
 import MapView, { Marker, Callout, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
@@ -98,13 +98,56 @@ const parseParadas = (rawParadas: unknown): any[] => {
   return [];
 };
 
-/** Build resolved image info for a raw image path */
 const resolveImage = (rawImg: string | null | undefined) => {
   const localSrc = getLocalPresetSource(rawImg);
   if (localSrc) return { img: undefined, imgLocal: localSrc };
   const networkUrl = getImageUrl(rawImg);
   return { img: networkUrl || undefined, imgLocal: null };
 };
+
+const BubbleMarker = React.memo(function BubbleMarker({
+  point,
+  onPress,
+}: {
+  point: MapPoint;
+  onPress: (p: MapPoint) => void;
+}) {
+  const hasImage = !!(point.user.imgLocal || point.user.img);
+  const borderColor = point.userType === 'chofer' ? '#172554' : '#16a34a';
+
+  return (
+    <Marker
+      coordinate={{ latitude: point.lat, longitude: point.lng }}
+      onPress={() => onPress(point)}
+    >
+      {hasImage ? (
+        <View
+          style={{
+            width: 35, height: 35, borderRadius: 26, borderWidth: 3,
+            borderColor, backgroundColor: '#fff', overflow: 'hidden',
+            alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          <Image
+            source={point.user.imgLocal || { uri: point.user.img! }}
+            style={{ width: 35, height: 35, borderRadius: 26 }}
+            resizeMode="cover"
+          />
+        </View>
+      ) : (
+        <View
+          style={{
+            width: 35, height: 35, borderRadius: 26, borderWidth: 3,
+            borderColor, backgroundColor: '#fff',
+            alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          <Ionicons name="person" size={28} color={borderColor} />
+        </View>
+      )}
+    </Marker>
+  );
+});
 
 // ─── Component ───
 export default function HomeScreen() {
@@ -120,7 +163,6 @@ export default function HomeScreen() {
 
   // Map state
   const [mapPoints, setMapPoints] = useState<MapPoint[]>([]);
-  const [filteredPoints, setFilteredPoints] = useState<MapPoint[]>([]);
   const [filter, setFilter] = useState<FilterType>('todo');
   const [selectedPoint, setSelectedPoint] = useState<MapPoint | null>(null);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -293,7 +335,6 @@ export default function HomeScreen() {
 
       if (!cancelled) {
         setMapPoints(points);
-        setFilteredPoints(points);
         setGeocoding(false);
       }
     };
@@ -302,13 +343,10 @@ export default function HomeScreen() {
     return () => { cancelled = true; };
   }, [loading, drivers, passengers, routes, routePassengers]);
 
-  // ─── Filter ───
-  useEffect(() => {
-    if (filter === 'todo') {
-      setFilteredPoints(mapPoints);
-    } else {
-      setFilteredPoints(mapPoints.filter((p) => p.userType === filter));
-    }
+  // ─── Filter (memoized – no extra re-renders) ───
+  const filteredPoints = useMemo(() => {
+    if (filter === 'todo') return mapPoints;
+    return mapPoints.filter((p) => p.userType === filter);
   }, [filter, mapPoints]);
 
   // ─── Handlers ───
@@ -322,9 +360,9 @@ export default function HomeScreen() {
     }
   };
 
-  const handleMarkerPress = (point: MapPoint) => {
+  const handleMarkerPress = useCallback((point: MapPoint) => {
     setSelectedPoint(point);
-  };
+  }, []);
 
   const handleCloseSheet = () => {
     setSelectedPoint(null);
@@ -441,59 +479,16 @@ export default function HomeScreen() {
         toolbarEnabled={false}
       >
         {/* Markers for drivers and passengers */}
-        {filteredPoints.map((point) => {
-          const hasImage = !!(point.user.imgLocal || point.user.img);
-          const borderColor = point.userType === 'chofer' ? '#172554' : '#16a34a';
-
-          return (
-            <Marker
+        {(!selectedPoint
+            ? filteredPoints
+            : filteredPoints.filter((point) => point.id === selectedPoint.id)
+          ).map((point) => (
+            <BubbleMarker
               key={point.id}
-              coordinate={{ latitude: point.lat, longitude: point.lng }}
-              onPress={() => handleMarkerPress(point)}
-            >
-              {hasImage ? (
-                <View
-                  style={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: 26,
-                    borderWidth: 3,
-                    borderColor,
-                    backgroundColor: '#fff',
-                    overflow: 'hidden',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Image
-                    source={point.user.imgLocal || { uri: point.user.img! }}
-                    style={{
-                      width: 52,
-                      height: 52,
-                      borderRadius: 26,
-                    }}
-                    resizeMode="cover"
-                  />
-                </View>
-              ) : (
-                <View
-                  style={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: 26,
-                    borderWidth: 3,
-                    borderColor,
-                    backgroundColor: '#fff',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Ionicons name="person" size={28} color={borderColor} />
-                </View>
-              )}
-            </Marker>
-          );
-        })}
+              point={point}
+              onPress={handleMarkerPress}
+            />
+          ))}
 
         {/* ── Route polyline ── */}
         {routeCoords.length > 0 && selectedPoint && (
@@ -690,13 +685,17 @@ export default function HomeScreen() {
             left: 0,
             right: 0,
             zIndex: 30,
+            alignItems: 'center',
           }}
         >
           <View
             style={{
+              width: '98%',
+              maxWidth: 500,
               backgroundColor: '#fff',
               borderTopLeftRadius: 24,
               borderTopRightRadius: 24,
+              overflow: 'hidden',
               padding: 20,
               shadowColor: '#0f172a',
               shadowOffset: { width: 0, height: -8 },

@@ -44,7 +44,10 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
       <View
         style={[
           styles.container,
-          { paddingBottom: Math.max(insets.bottom, 8) },
+          {
+            paddingBottom: Math.max(insets.bottom, 18),
+            marginBottom: insets.bottom > 0 ? 0 : 12,
+          },
         ]}
       >
         {TABS.map((tab) => {
@@ -66,25 +69,26 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
           /* ── Center elevated "Inicio" button ── */
           if (tab.isMain) {
             return (
-              <TouchableOpacity
-                key={tab.routeName}
-                onPress={onPress}
-                activeOpacity={0.8}
-                style={styles.mainWrapper}
-              >
-                <View
-                  style={[
-                    styles.mainButton,
-                    isFocused ? styles.mainButtonActive : styles.mainButtonInactive,
-                  ]}
+              <View key={tab.routeName} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: '100%', position: 'absolute', top: 0, zIndex: 10 }}>
+                <TouchableOpacity
+                  onPress={onPress}
+                  activeOpacity={0.8}
+                  style={styles.mainWrapper}
                 >
-                  <Ionicons
-                    name={iconName}
-                    size={34}
-                    color={isFocused ? '#fff' : '#172554'}
-                  />
-                </View>
-              </TouchableOpacity>
+                  <View
+                    style={[
+                      styles.mainButton,
+                      isFocused ? styles.mainButtonActive : styles.mainButtonInactive,
+                    ]}
+                  >
+                    <Ionicons
+                      name={iconName}
+                      size={34}
+                      color={isFocused ? '#fff' : '#172554'}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
             );
           }
 
@@ -100,14 +104,14 @@ const TabBar = ({ state, navigation }: BottomTabBarProps) => {
 
               <Ionicons
                 name={iconName}
-                size={24}
+                size={28}
                 color={isFocused ? '#172554' : '#9ca3af'}
-                style={{ marginBottom: 2 }}
+                style={{ marginBottom: 4 }}
               />
               <Text
                 style={[
                   styles.label,
-                  { color: isFocused ? '#172554' : '#9ca3af' },
+                  { color: isFocused ? '#172554' : '#9ca3af', fontSize: 13, marginTop: 2 },
                 ]}
               >
                 {tab.label}
@@ -154,22 +158,22 @@ export default TabBar;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-around',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderTopColor: '#e5e7eb',
-    height: Platform.OS === 'ios' ? 88 : 72,
+    height: Platform.OS === 'ios' ? 88 : 120,
     paddingTop: 6,
     ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-      },
-      android: {
-        elevation: 12,
+      tab: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        position: 'relative',
+        paddingVertical: 12,
       },
     }),
   },
@@ -179,6 +183,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: '100%',
     position: 'relative',
+    paddingVertical: 10, // Más espacio vertical
+    paddingBottom: 6, // Más espacio inferior
   },
   activeIndicator: {
     position: 'absolute',
@@ -197,17 +203,19 @@ const styles = StyleSheet.create({
   },
   /* Main (center) elevated button */
   mainWrapper: {
-    width: 64,
+    width: 72,
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     height: '100%',
+    paddingBottom: 8,
+    marginBottom: 40,
   },
   mainButton: {
     position: 'absolute',
     top: -24,
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 2,

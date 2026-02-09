@@ -1,19 +1,28 @@
 import 'dotenv/config';
 
+const appJson = require('./app.json');
+
 const config = {
   expo: {
-    ...require('./app.json').expo,
+    ...appJson.expo,
     plugins: [
-      ...(require('./app.json').expo.plugins || []),
+      ...(appJson.expo.plugins || []),
     ],
     android: {
-      ...require('./app.json').expo.android,
+      ...appJson.expo.android,
+      package: "com.gherson.copiloto",
       config: {
         googleMaps: {
           apiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY || '',
         },
       },
     },
+    extra: {
+      ...(appJson.expo.extra || {}),
+      eas: {
+        projectId: "8a370027-d550-499b-b761-fad0894de3b9",
+      }
+    }
   },
 };
 
