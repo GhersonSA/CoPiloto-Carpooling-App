@@ -142,11 +142,13 @@ export default function LoginScreen() {
         <View className="flex-1 bg-black/50 justify-center items-center px-4">
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            className="w-full max-w-lg"
+            style={{ width: '100%', maxWidth: 400 }}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
           >
             <ScrollView
               keyboardShouldPersistTaps="handled"
-              contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+              contentContainerStyle={{ paddingVertical: 24 }}
+              showsVerticalScrollIndicator={false}
             >
               <View
                 className="bg-white rounded-lg p-6 relative"
@@ -156,24 +158,20 @@ export default function LoginScreen() {
                 <TouchableOpacity onPress={closeModal} className="absolute top-4 right-4 z-10">
                   <Ionicons name="close" size={40} color="#9ca3af" />
                 </TouchableOpacity>
-
                 {/* Title */}
                 <Text className="text-blue-950 text-4xl font-bold mb-2 mt-2">
                   {isRegisterMode ? 'Registrarse' : 'Iniciar Sesión'}
                 </Text>
-
                 {/* Subtitle */}
                 <Text className="text-gray-500 text-base italic mb-4">
                   {isRegisterMode ? 'Crea una cuenta nueva' : 'Encuentra tu recorrido ideal con CoPiloto'}
                 </Text>
-
                 {/* Error */}
                 {error ? (
                   <View className="bg-red-100 border border-red-400 rounded px-4 py-3 mb-3">
                     <Text className="text-red-700 text-center">{error}</Text>
                   </View>
                 ) : null}
-
                 {/* ===== REGISTER ===== */}
                 {isRegisterMode && (
                   <>
@@ -188,7 +186,6 @@ export default function LoginScreen() {
                       className="border border-gray-300 rounded h-12 px-4 text-base mb-2"
                       placeholderTextColor="#9ca3af"
                     />
-
                     {/* Usuario */}
                     <Text className="text-base font-medium mt-2.5 mb-1">
                       Usuario<Text className="text-red-600">*</Text>
@@ -201,7 +198,6 @@ export default function LoginScreen() {
                       placeholderTextColor="#9ca3af"
                       autoCapitalize="none"
                     />
-
                     {/* Correo (register) */}
                     <Text className="text-base font-medium mt-2.5 mb-1">
                       Correo Electrónico<Text className="text-red-600">*</Text>
@@ -217,7 +213,6 @@ export default function LoginScreen() {
                     />
                   </>
                 )}
-
                 {/* Correo (login) */}
                 {!isRegisterMode && (
                   <>
@@ -235,7 +230,6 @@ export default function LoginScreen() {
                     />
                   </>
                 )}
-
                 {/* Contraseña */}
                 <Text className="text-base font-medium mt-2.5 mb-1">
                   Contraseña<Text className="text-red-600">*</Text>
@@ -248,7 +242,6 @@ export default function LoginScreen() {
                   placeholderTextColor="#9ca3af"
                   secureTextEntry
                 />
-
                 {/* Submit */}
                 <TouchableOpacity
                   onPress={handleSubmit}
@@ -267,7 +260,6 @@ export default function LoginScreen() {
                     {loading ? 'Cargando...' : isRegisterMode ? 'Registrarse' : 'Iniciar sesión'}
                   </Text>
                 </TouchableOpacity>
-
                 {/* Google */}
                 <TouchableOpacity
                   onPress={handleGoogleSignIn}
@@ -298,7 +290,6 @@ export default function LoginScreen() {
                   </Svg>
                   <Text style={{ color: '#374151', fontSize: 18, marginLeft: 8 }}>Continuar con Google</Text>
                 </TouchableOpacity>
-
                 {/* Guest */}
                 <TouchableOpacity
                   onPress={handleGuest}
@@ -319,7 +310,6 @@ export default function LoginScreen() {
                 >
                   <Text style={{ color: '#111', fontSize: 20 }}>Entrar como invitado</Text>
                 </TouchableOpacity>
-
                 {/* Toggle */}
                 <TouchableOpacity
                   onPress={() => { setIsRegisterMode(!isRegisterMode); setError(''); }}
@@ -329,7 +319,6 @@ export default function LoginScreen() {
                     {isRegisterMode ? '¿Ya tienes cuenta? Iniciar sesión' : '¿No tienes cuenta? Registrarse'}
                   </Text>
                 </TouchableOpacity>
-
                 {/* Cancel */}
                 <TouchableOpacity onPress={closeModal} className="mt-3 mb-2">
                   <Text className="text-gray-500 text-center underline text-base">Cancelar</Text>

@@ -145,7 +145,7 @@ const LoginHero = () => {
                             Iniciar Sesión
                         </button>
                         <a 
-                            href="https://expo.dev/artifacts/eas/wyvtJbgN3rnBaPAfpGJSdy.apk" 
+                            href={process.env.NEXT_PUBLIC_APK_URL} 
                             download
                             className="hidden md:flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition duration-300 text-lg font-semibold"
                         >
