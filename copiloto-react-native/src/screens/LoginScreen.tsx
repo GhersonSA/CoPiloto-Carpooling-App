@@ -321,7 +321,6 @@ export default function LoginScreen() {
                 </TouchableOpacity>
               </View>
             </ScrollView>
-          </KeyboardAvoidingView>
         </View>
       </Modal>
     </SafeAreaView>
