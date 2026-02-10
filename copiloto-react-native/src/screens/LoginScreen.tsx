@@ -139,21 +139,17 @@ export default function LoginScreen() {
 
       {/* ========== LOGIN/REGISTER MODAL ========== */}
       <Modal visible={modalVisible} animationType="slide" transparent>
-        <View className="flex-1 bg-black/50 justify-center items-center px-4">
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 16 }}>
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingVertical: 24 }}
+            showsVerticalScrollIndicator={false}
             style={{ width: '100%', maxWidth: 400 }}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
           >
-            <ScrollView
-              keyboardShouldPersistTaps="handled"
-              contentContainerStyle={{ paddingVertical: 24 }}
-              showsVerticalScrollIndicator={false}
+            <View
+              className="bg-white rounded-lg p-6 relative"
+              style={{ elevation: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 8 }}
             >
-              <View
-                className="bg-white rounded-lg p-6 relative"
-                style={{ elevation: 5, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.2, shadowRadius: 8 }}
-              >
                 {/* Close X */}
                 <TouchableOpacity onPress={closeModal} className="absolute top-4 right-4 z-10">
                   <Ionicons name="close" size={40} color="#9ca3af" />
